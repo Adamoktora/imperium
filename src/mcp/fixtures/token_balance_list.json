@@ -1,5 +1,6 @@
 [
   { "token": "Ethereum", "symbol": "ETH", "chain": "base", "balance": "1.5", "usdValue": 4500, "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" },
   { "token": "USD Coin", "symbol": "USDC", "chain": "base", "balance": "2000", "usdValue": 2000, "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" },
-  { "token": "Wrapped Bitcoin", "symbol": "WBTC", "chain": "base", "balance": "0.05", "usdValue": 3500, "address": "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c" }
+  { "token": "Wrapped Bitcoin", "symbol": "WBTC", "chain": "ethereum", "balance": "0.05", "usdValue": 3500, "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" },
+  { "token": "Matic", "symbol": "MATIC", "chain": "polygon", "balance": "5000", "usdValue": 2000, "address": "0x0000000000000000000000000000000000001010" }
 ]

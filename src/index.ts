@@ -83,6 +83,38 @@ portfolio
     await client.disconnect();
   });
 
+portfolio
+  .command("buy")
+  .description("Buy crypto with fiat (returns checkout URL)")
+  .argument("<token>", "Token to buy (e.g., ETH)")
+  .argument("[amount]", "Fiat amount in USD", "100")
+  .action(async (token: string, amount: string) => {
+    const client = createMcpClient(program.opts().demo);
+    await client.connect();
+    const service = new PortfolioService(client);
+    display.header(`Buy ${token}`);
+    const result = await service.buyWithFiat(token, amount);
+    console.log(`  Checkout URL: ${(result as any).checkoutUrl || JSON.stringify(result)}`);
+    display.success("Open the URL in your browser to complete the purchase.");
+    await client.disconnect();
+  });
+
+portfolio
+  .command("deposit")
+  .description("Create a multi-chain deposit link")
+  .argument("[chain]", "Destination chain", "base")
+  .argument("[token]", "Destination token", "USDC")
+  .action(async (chain: string, token: string) => {
+    const client = createMcpClient(program.opts().demo);
+    await client.connect();
+    const service = new PortfolioService(client);
+    display.header(`Deposit → ${token} on ${chain}`);
+    const result = await service.createDeposit(chain, token);
+    console.log(JSON.stringify(result, null, 2));
+    display.success("Share the deposit addresses above. Incoming crypto auto-converts.");
+    await client.disconnect();
+  });
+
 // Default: `imperium portfolio` shows view
 portfolio.action(async () => {
   const client = createMcpClient(program.opts().demo);

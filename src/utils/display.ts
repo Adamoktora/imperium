@@ -66,7 +66,10 @@ export function showActions(actions: RebalanceAction[]): void {
     return;
   }
   for (const a of actions) {
-    console.log(chalk.yellow(`  → SWAP $${a.estimatedUsd.toFixed(0)} ${a.from.token} → ${a.to.token} on ${a.from.chain}`));
+    const label = a.type === "bridge" ? "BRIDGE" : "SWAP";
+    const color = a.type === "bridge" ? chalk.magenta : chalk.yellow;
+    const chainInfo = a.type === "bridge" ? `${a.from.chain} → ${a.to.chain}` : `on ${a.from.chain}`;
+    console.log(color(`  → ${label} $${a.estimatedUsd.toFixed(0)} ${a.from.token} → ${a.to.token} ${chainInfo}`));
     console.log(chalk.gray(`    ${a.reason}`));
   }
 }

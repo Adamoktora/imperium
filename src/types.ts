@@ -57,7 +57,7 @@ export interface DriftReport {
 }
 
 export interface RebalanceAction {
-  type: "swap";
+  type: "swap" | "bridge";
   from: { token: string; chain: string; amount: string };
   to: { token: string; chain: string };
   reason: string;

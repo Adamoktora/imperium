@@ -47,12 +47,13 @@ export function generateActions(drift: DriftReport[], current: Allocation[]): Re
     if (uwIdx >= underweight.length) break;
     const target = underweight[uwIdx];
     const sellUsd = (over.driftPct / 100) * totalUsd;
+    const isCrossChain = over.chain !== target.chain;
 
     actions.push({
-      type: "swap",
+      type: isCrossChain ? "bridge" : "swap",
       from: { token: over.token, chain: over.chain, amount: sellUsd.toFixed(2) },
       to: { token: target.token, chain: target.chain },
-      reason: `${over.token} overweight by ${over.driftPct.toFixed(1)}%, selling $${sellUsd.toFixed(0)} to ${target.token}`,
+      reason: `${over.token} overweight by ${over.driftPct.toFixed(1)}%, ${isCrossChain ? "bridging" : "swapping"} $${sellUsd.toFixed(0)} to ${target.token}${isCrossChain ? ` on ${target.chain}` : ""}`,
       estimatedUsd: sellUsd,
     });
     uwIdx++;
@@ -88,12 +89,11 @@ export class RebalanceService {
       }
 
       try {
-        const result = (await this.client.callTool("token_swap", {
-          fromToken: action.from.token,
-          toToken: action.to.token,
-          amount: action.from.amount,
-          chain: action.from.chain,
-        })) as any;
+        const toolName = action.type === "bridge" ? "token_bridge" : "token_swap";
+        const args = action.type === "bridge"
+          ? { token: action.from.token, amount: action.from.amount, fromChain: action.from.chain, toChain: action.to.chain }
+          : { fromToken: action.from.token, toToken: action.to.token, amount: action.from.amount, chain: action.from.chain };
+        const result = (await this.client.callTool(toolName, args)) as any;
 
         this.policyEngine.recordSpending(action.estimatedUsd);
         results.push({ action, success: true, txHash: result.txHash ?? "demo-tx" });
