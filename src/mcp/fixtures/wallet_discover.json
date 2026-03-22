@@ -1,0 +1,6 @@
+[
+  { "address": "0xSmartMoney1...abc", "chain": "base", "pnl": 520000, "winRate": 78.5 },
+  { "address": "0xSmartMoney2...def", "chain": "base", "pnl": 340000, "winRate": 72.1 },
+  { "address": "0xSmartMoney3...ghi", "chain": "base", "pnl": 280000, "winRate": 65.8 },
+  { "address": "0xSmartMoney4...jkl", "chain": "base", "pnl": 195000, "winRate": 69.3 }
+]

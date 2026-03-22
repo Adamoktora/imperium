@@ -1,0 +1,7 @@
+[
+  { "address": "0xaaa111", "balance": "150000", "pct": 3.2, "pnl": 450000 },
+  { "address": "0xbbb222", "balance": "120000", "pct": 2.6, "pnl": 320000 },
+  { "address": "0xccc333", "balance": "95000", "pct": 2.0, "pnl": 180000 },
+  { "address": "0xddd444", "balance": "80000", "pct": 1.7, "pnl": 95000 },
+  { "address": "0xeee555", "balance": "60000", "pct": 1.3, "pnl": 72000 }
+]

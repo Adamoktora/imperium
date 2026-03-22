@@ -1,0 +1,12 @@
+{
+  "depositId": "dep_123abc",
+  "addresses": {
+    "ethereum": "0xDeposit1234...eth",
+    "base": "0xDeposit1234...base",
+    "polygon": "0xDeposit1234...poly",
+    "solana": "DepositSolana1234...sol"
+  },
+  "destinationChain": "base",
+  "destinationToken": "USDC",
+  "status": "active"
+}

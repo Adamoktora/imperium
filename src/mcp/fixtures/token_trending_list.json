@@ -1,0 +1,7 @@
+[
+  { "token": "Ethereum", "symbol": "ETH", "chain": "base", "price": 3000, "change24h": 2.5, "volume24h": 15000000000 },
+  { "token": "Aero", "symbol": "AERO", "chain": "base", "price": 1.85, "change24h": 12.3, "volume24h": 45000000 },
+  { "token": "Brett", "symbol": "BRETT", "chain": "base", "price": 0.042, "change24h": -5.2, "volume24h": 8500000 },
+  { "token": "Degen", "symbol": "DEGEN", "chain": "base", "price": 0.0085, "change24h": 28.7, "volume24h": 12000000 },
+  { "token": "Morpho", "symbol": "MORPHO", "chain": "base", "price": 2.15, "change24h": 4.1, "volume24h": 6200000 }
+]

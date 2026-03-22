@@ -1,0 +1,9 @@
+{
+  "txHash": "0xbridge1234567890abcdef1234567890abcdef1234567890abcdef12345678",
+  "status": "pending",
+  "fromChain": "ethereum",
+  "toChain": "base",
+  "token": "USDC",
+  "amount": "1000",
+  "estimatedTime": "5 minutes"
+}

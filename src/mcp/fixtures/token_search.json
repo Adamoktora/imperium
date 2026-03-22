@@ -1,0 +1,4 @@
+[
+  { "token": "Ethereum", "symbol": "ETH", "chain": "base", "price": 3000, "address": "0xeeee", "volume24h": 15000000000 },
+  { "token": "Ethereum Name Service", "symbol": "ENS", "chain": "ethereum", "price": 28.5, "address": "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72", "volume24h": 45000000 }
+]

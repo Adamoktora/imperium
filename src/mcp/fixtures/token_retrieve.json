@@ -1,0 +1,10 @@
+{
+  "token": "Ethereum",
+  "symbol": "ETH",
+  "chain": "base",
+  "price": 3000,
+  "change24h": 2.5,
+  "volume24h": 15000000000,
+  "marketCap": 360000000000,
+  "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+}

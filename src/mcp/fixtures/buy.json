@@ -1,0 +1,8 @@
+{
+  "checkoutUrl": "https://buy.moonpay.com/checkout?token=ETH&amount=100",
+  "status": "pending",
+  "fiatAmount": 100,
+  "fiatCurrency": "USD",
+  "cryptoToken": "ETH",
+  "estimatedAmount": "0.033"
+}

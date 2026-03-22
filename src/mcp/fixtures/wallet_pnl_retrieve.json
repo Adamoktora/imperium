@@ -1,0 +1,10 @@
+{
+  "totalValue": 10000,
+  "totalPnL": 1250,
+  "pnlPct": 14.3,
+  "positions": [
+    { "token": "ETH", "pnl": 800, "pnlPct": 21.6 },
+    { "token": "USDC", "pnl": 0, "pnlPct": 0 },
+    { "token": "WBTC", "pnl": 450, "pnlPct": 14.8 }
+  ]
+}

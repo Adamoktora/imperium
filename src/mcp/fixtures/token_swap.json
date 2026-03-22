@@ -1,0 +1,10 @@
+{
+  "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  "status": "confirmed",
+  "fromToken": "ETH",
+  "toToken": "USDC",
+  "fromAmount": "0.5",
+  "toAmount": "1500",
+  "chain": "base",
+  "gasUsed": "0.001"
+}

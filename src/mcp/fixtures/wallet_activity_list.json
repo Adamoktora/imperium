@@ -1,0 +1,5 @@
+[
+  { "type": "swap", "token": "ETH → USDC", "amount": "0.5 ETH", "chain": "base", "timestamp": "2026-03-22T10:30:00Z", "txHash": "0xabc123" },
+  { "type": "receive", "token": "ETH", "amount": "1.0 ETH", "chain": "base", "timestamp": "2026-03-21T15:00:00Z", "txHash": "0xdef456" },
+  { "type": "bridge", "token": "USDC", "amount": "500 USDC", "chain": "base", "timestamp": "2026-03-20T08:45:00Z", "txHash": "0xghi789" }
+]

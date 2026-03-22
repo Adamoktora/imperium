@@ -1,0 +1,10 @@
+{
+  "token": "Ethereum",
+  "symbol": "ETH",
+  "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "chain": "base",
+  "holderConcentration": 8,
+  "liquidityUsd": 50000000000,
+  "communityWarnings": false,
+  "warnings": []
+}
