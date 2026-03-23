@@ -1,7 +1,7 @@
 import type { McpClient, TokenBalance, Allocation, PnLSummary, Activity } from "../types.js";
 
-const DEFAULT_WALLET = "imperium";
-const DEFAULT_CHAIN = "base";
+const DEFAULT_WALLET = process.env.MOONPAY_WALLET || "imperium";
+const DEFAULT_CHAIN = process.env.DEFAULT_CHAIN || "base";
 
 export class PortfolioService {
   constructor(private client: McpClient, private wallet: string = DEFAULT_WALLET) {}

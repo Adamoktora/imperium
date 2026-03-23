@@ -506,17 +506,75 @@ program
           lastRiskScores[r.token] = r.riskScore;
         }
 
-        // AI analysis on alerts
+        // AI analysis + autonomous action on alerts
         if (alerts > 0 && isAIAvailable()) {
           console.log(chalk.dim("\n  AI analyzing alerts..."));
           const analysis = await analyzePortfolio(allocation, reports);
           console.log(chalk.white(`\n${analysis}`));
+
+          // AUTONOMOUS: AI decides rebalance targets
+          console.log(chalk.dim("\n  AI deciding rebalance action..."));
+          const { targets, reasoning } = await decideRebalance(allocation, reports);
+          if (targets.length > 0) {
+            display.header("Autonomous Action");
+            for (const t of targets) console.log(`  ${t.token}: ${t.pct.toFixed(0)}%`);
+            console.log(chalk.dim(`  Reasoning: ${reasoning}`));
+
+            // Generate swap/bridge actions
+            const drift = calculateDrift(allocation, targets);
+            const actions = generateActions(drift, allocation);
+            if (actions.length > 0) {
+              console.log("");
+              display.showActions(actions);
+
+              // Policy check each action
+              const cfg = loadConfig();
+              const pe = new PolicyEngine(cfg.policy);
+              let approved = 0;
+              let blocked = 0;
+              for (const a of actions) {
+                const check = pe.checkTransaction({ type: a.type, token: a.from.token, amountUsd: a.estimatedUsd });
+                if (check.approved) {
+                  approved++;
+                  console.log(chalk.green(`  [policy] ${a.from.token} -> ${a.to.token}: APPROVED`));
+                } else {
+                  blocked++;
+                  console.log(chalk.red(`  [policy] ${a.from.token} -> ${a.to.token}: BLOCKED - ${check.reason}`));
+                }
+              }
+
+              if (isDemo) {
+                // Dry-run: simulate execution
+                console.log(chalk.yellow(`\n  [dry-run] Would execute ${approved} action(s). Skipped - demo mode.`));
+                console.log(chalk.dim(`  In real mode with funded wallet, these swaps would execute via MoonPay CLI.`));
+              } else if (approved > 0) {
+                // Real mode: execute approved actions
+                console.log(chalk.bold(`\n  Executing ${approved} approved action(s)...`));
+                const rebalanceService = new RebalanceService(client, pe);
+                const results = await rebalanceService.execute(actions.filter((_, i) => {
+                  const check = pe.checkTransaction({ type: actions[i].type, token: actions[i].from.token, amountUsd: actions[i].estimatedUsd });
+                  return check.approved;
+                }));
+                for (const r of results) {
+                  if (r.success) {
+                    display.success(`${r.action.from.token} -> ${r.action.to.token} | tx: ${r.txHash?.slice(0, 16)}...`);
+                  } else {
+                    display.error(`Failed: ${r.action.from.token} -> ${r.action.to.token} | ${r.error}`);
+                  }
+                }
+              }
+
+              // Save AI targets
+              cfg.targetAllocation = targets;
+              saveConfig(cfg);
+            }
+          }
         }
 
         // Log alerts on-chain
         if (alerts > 0 && isOnChainAvailable()) {
           const alertTokens = reports.filter(r => r.riskScore >= 40).map(r => `${r.token}:${r.riskScore}`).join(" ");
-          const tx = await logDecision(`WATCH-ALERT: cycle ${cycle} | ${alertTokens}`);
+          const tx = await logDecision(`WATCH-AUTO: cycle ${cycle} | ${alertTokens}`);
           if (tx) {
             console.log(chalk.dim(`  On-chain: ${getExplorerUrl(tx)}`));
           }

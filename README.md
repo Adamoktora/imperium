@@ -110,11 +110,14 @@ imperium watch --interval 60    # Monitor every 60 seconds
 imperium watch --interval 10    # Faster monitoring (10s)
 ```
 
-Watch mode runs continuously:
+Watch mode is a **fully autonomous agent loop**:
 1. Scans portfolio and risk every interval
 2. Alerts when token risk increases (>= 70: SELL alert, >= 40: WATCH)
-3. If AI is enabled, automatically analyzes and recommends actions
-4. Press Ctrl+C to stop
+3. AI analyzes alerts and decides optimal rebalance targets
+4. Generates swap/bridge actions and checks against spending policy
+5. Executes approved actions via MoonPay CLI (or dry-run in demo mode)
+6. Logs every decision on-chain (Base Sepolia)
+7. Press Ctrl+C to stop
 
 ### Rebalancing
 ```bash
@@ -177,7 +180,14 @@ Connected via real MCP protocol using `@modelcontextprotocol/sdk` (stdio transpo
 
 ## OpenWallet Standard Integration
 
-Real HD wallet creation via `@open-wallet-standard/core` (7 chains):
+Imperium uses a **two-layer wallet architecture** for defense in depth:
+
+- **OWS (cold layer)**: Identity, policy signing, on-chain transaction signing via `@open-wallet-standard/core`
+- **MoonPay CLI (hot layer)**: Trade execution, balance queries, market data
+
+This separation ensures the policy-signing key (OWS) is never exposed to the execution layer (MoonPay). OWS signs policy attestations that gate what MoonPay can execute.
+
+Real HD wallet creation via OWS (7 chains):
 
 ```
 imperium init
@@ -195,6 +205,7 @@ Custom policy engine built on top of OWS:
 - Token whitelist/blacklist
 - Slippage guards
 - OWS-signed policy attestation (cryptographic proof human approved)
+- On-chain decision logging via OWS wallet (Base Sepolia)
 
 ## AI Integration (Groq)
 
