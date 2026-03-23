@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import "dotenv/config";
 import { Command } from "commander";
 import { createMcpClient } from "./mcp/client.js";
 import { PortfolioService } from "./core/portfolio.js";
@@ -8,8 +9,12 @@ import { DiscoveryService } from "./core/discovery.js";
 import { PolicyEngine } from "./wallet/policy.js";
 import { loadConfig, saveConfig, getConfigPath, getDefaultPolicy } from "./utils/config.js";
 import { initWallet, isOWSAvailable, signPolicyAttestation } from "./wallet/ows.js";
+import { initGroq, isAIAvailable, analyzePortfolio, analyzeRisk, analyzeTrending, decideRebalance } from "./ai/advisor.js";
 import * as display from "./utils/display.js";
 import type { TargetAllocation } from "./types.js";
+
+// Initialize AI
+const aiReady = initGroq();
 
 const program = new Command();
 
@@ -333,6 +338,180 @@ policy.action(() => {
   display.showPolicy(config.policy);
 });
 
+// === ANALYZE (AI-POWERED) ===
+program
+  .command("analyze")
+  .description("AI-powered portfolio analysis and recommendations (requires GROQ_API_KEY)")
+  .action(async () => {
+    if (!isAIAvailable()) {
+      display.error("AI unavailable. Set GROQ_API_KEY in .env (free: https://console.groq.com)");
+      return;
+    }
+    const client = createMcpClient(program.opts().demo);
+    await client.connect();
+
+    display.header("AI Portfolio Analysis");
+    console.log(chalk.dim("  Gathering portfolio data..."));
+
+    const portfolioService = new PortfolioService(client);
+    const riskService = new RiskService(client);
+
+    const allocation = await portfolioService.getAllocation();
+    if (allocation.length === 0) {
+      display.warn("Empty portfolio. Nothing to analyze.");
+      await client.disconnect();
+      return;
+    }
+
+    const holdings = await portfolioService.getHoldings();
+    const riskReports = await riskService.scanPortfolio(holdings);
+
+    console.log(chalk.dim("  Asking AI for analysis...\n"));
+    const analysis = await analyzePortfolio(allocation, riskReports);
+    console.log(chalk.white(analysis));
+
+    await client.disconnect();
+  });
+
+// === AI REBALANCE ===
+program
+  .command("ai-rebalance")
+  .description("AI decides optimal target allocation based on risk analysis")
+  .action(async () => {
+    if (!isAIAvailable()) {
+      display.error("AI unavailable. Set GROQ_API_KEY in .env (free: https://console.groq.com)");
+      return;
+    }
+    const client = createMcpClient(program.opts().demo);
+    await client.connect();
+
+    display.header("AI Rebalance Advisor");
+    console.log(chalk.dim("  Analyzing portfolio and risks...\n"));
+
+    const portfolioService = new PortfolioService(client);
+    const riskService = new RiskService(client);
+
+    const allocation = await portfolioService.getAllocation();
+    const holdings = await portfolioService.getHoldings();
+    const riskReports = await riskService.scanPortfolio(holdings);
+
+    const { targets, reasoning } = await decideRebalance(allocation, riskReports);
+
+    if (targets.length === 0) {
+      display.error("AI could not determine target allocation.");
+      await client.disconnect();
+      return;
+    }
+
+    display.header("AI Recommended Allocation");
+    for (const t of targets) {
+      console.log(`  ${t.token}: ${t.pct.toFixed(0)}%`);
+    }
+    console.log(chalk.dim(`\n  Reasoning: ${reasoning}`));
+
+    // Preview what rebalance would look like
+    const drift = calculateDrift(allocation, targets);
+    const actions = generateActions(drift, allocation);
+    console.log("");
+    display.header("Proposed Actions");
+    display.showActions(actions);
+
+    // Save targets to config
+    const config = loadConfig();
+    config.targetAllocation = targets;
+    saveConfig(config);
+    display.success("AI targets saved. Run 'imperium rebalance execute' to apply.");
+
+    await client.disconnect();
+  });
+
+// === WATCH MODE (AUTONOMOUS) ===
+program
+  .command("watch")
+  .description("Autonomous monitoring - continuously scans portfolio and alerts on changes")
+  .option("--interval <seconds>", "Check interval in seconds", "60")
+  .action(async (opts: any) => {
+    const interval = parseInt(opts.interval) * 1000;
+    const isDemo = program.opts().demo;
+    const client = createMcpClient(isDemo);
+    await client.connect();
+
+    const portfolioService = new PortfolioService(client);
+    const riskService = new RiskService(client);
+
+    display.header("Imperium Watch Mode");
+    console.log(chalk.dim(`  Mode: ${isDemo ? "demo" : "live"}`));
+    console.log(chalk.dim(`  AI: ${isAIAvailable() ? "enabled (Groq)" : "disabled (rule-based only)"}`));
+    console.log(chalk.dim(`  Interval: ${opts.interval}s`));
+    console.log(chalk.dim("  Press Ctrl+C to stop\n"));
+
+    let lastRiskScores: Record<string, number> = {};
+    let cycle = 0;
+
+    const runCycle = async () => {
+      cycle++;
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(chalk.dim(`\n--- Cycle ${cycle} | ${timestamp} ---`));
+
+      try {
+        const holdings = await portfolioService.getHoldings();
+        const allocation = await portfolioService.getAllocation();
+        const totalUsd = allocation.reduce((s, a) => s + a.usdValue, 0);
+
+        console.log(chalk.dim(`  Portfolio: $${totalUsd.toLocaleString()} | ${holdings.length} tokens`));
+
+        // Risk scan
+        const reports = await riskService.scanPortfolio(holdings);
+        let alerts = 0;
+
+        for (const r of reports) {
+          const prevScore = lastRiskScores[r.token] ?? r.riskScore;
+          const delta = r.riskScore - prevScore;
+
+          if (r.riskScore >= 70) {
+            display.error(`ALERT: ${r.token} risk ${r.riskScore}/100 -> ${r.recommendation}`);
+            alerts++;
+          } else if (delta > 10) {
+            display.warn(`${r.token} risk increased: ${prevScore} -> ${r.riskScore}`);
+            alerts++;
+          } else if (r.riskScore >= 40) {
+            display.warn(`${r.token}: risk ${r.riskScore}/100 [${r.recommendation}]`);
+          } else {
+            console.log(chalk.green(`  ${r.token}: OK (${r.riskScore}/100)`));
+          }
+
+          lastRiskScores[r.token] = r.riskScore;
+        }
+
+        // AI analysis on alerts
+        if (alerts > 0 && isAIAvailable()) {
+          console.log(chalk.dim("\n  AI analyzing alerts..."));
+          const analysis = await analyzePortfolio(allocation, reports);
+          console.log(chalk.white(`\n${analysis}`));
+        }
+
+        if (alerts === 0) {
+          display.success("All clear. No risk alerts.");
+        }
+      } catch (err: any) {
+        display.error(`Cycle error: ${err.message}`);
+      }
+    };
+
+    // Run first cycle immediately
+    await runCycle();
+
+    // Continue running
+    const timer = setInterval(runCycle, interval);
+
+    process.on("SIGINT", async () => {
+      clearInterval(timer);
+      console.log(chalk.dim("\n  Watch mode stopped."));
+      await client.disconnect();
+      process.exit(0);
+    });
+  });
+
 // === INTERACTIVE REPL ===
 program
   .command("interactive")
@@ -354,6 +533,7 @@ program
     console.log("");
     console.log(chalk.bold.cyan("  IMPERIUM v1.0 - Multi-Chain Financial Command Center"));
     console.log(chalk.dim(`  Mode: ${isDemo ? "demo (fixture data)" : "live (MoonPay CLI)"}`));
+    console.log(chalk.dim(`  AI: ${isAIAvailable() ? "enabled (Groq Llama 3.3 70B)" : "disabled (set GROQ_API_KEY in .env)"}`));
     console.log(chalk.dim("  Type 'help' for commands, 'quit' to exit\n"));
 
     const rl = readline.createInterface({
@@ -374,8 +554,11 @@ program
         console.log("  rebalance          Set target ETH:50 USDC:50 + preview");
         console.log("  execute            Execute rebalance (policy-gated)");
         console.log("  policy             Show spending policy");
+        console.log(chalk.cyan("  analyze            AI portfolio analysis (requires GROQ_API_KEY)"));
+        console.log(chalk.cyan("  ai-rebalance       AI decides optimal allocation"));
         console.log("  clear              Clear screen");
-        console.log("  quit               Exit\n");
+        console.log("  quit               Exit");
+        console.log(chalk.dim(`\n  AI: ${isAIAvailable() ? "enabled (Groq Llama 3.3)" : "disabled (set GROQ_API_KEY)"}\n`));
       },
       "portfolio": async () => {
         display.header("Portfolio");
@@ -454,6 +637,44 @@ program
         display.header("Spending Policy");
         const cfg = loadConfig();
         display.showPolicy(cfg.policy);
+      },
+      "analyze": async () => {
+        if (!isAIAvailable()) {
+          display.error("AI unavailable. Set GROQ_API_KEY in .env");
+          return;
+        }
+        display.header("AI Portfolio Analysis");
+        console.log(chalk.dim("  Gathering data..."));
+        const allocation = await portfolioService.getAllocation();
+        const holdings = await portfolioService.getHoldings();
+        const reports = await riskService.scanPortfolio(holdings);
+        console.log(chalk.dim("  Asking AI...\n"));
+        const analysis = await analyzePortfolio(allocation, reports);
+        console.log(chalk.white(analysis));
+      },
+      "ai-rebalance": async () => {
+        if (!isAIAvailable()) {
+          display.error("AI unavailable. Set GROQ_API_KEY in .env");
+          return;
+        }
+        display.header("AI Rebalance Advisor");
+        console.log(chalk.dim("  Analyzing..."));
+        const allocation = await portfolioService.getAllocation();
+        const holdings = await portfolioService.getHoldings();
+        const reports = await riskService.scanPortfolio(holdings);
+        const { targets, reasoning } = await decideRebalance(allocation, reports);
+        if (targets.length === 0) { display.error("AI could not determine allocation."); return; }
+        for (const t of targets) console.log(`  ${t.token}: ${t.pct.toFixed(0)}%`);
+        console.log(chalk.dim(`\n  Reasoning: ${reasoning}`));
+        const drift = calculateDrift(allocation, targets);
+        const actions = generateActions(drift, allocation);
+        console.log("");
+        display.header("Proposed Actions");
+        display.showActions(actions);
+        const cfg = loadConfig();
+        cfg.targetAllocation = targets;
+        saveConfig(cfg);
+        display.success("AI targets saved.");
       },
       "clear": async () => {
         console.clear();

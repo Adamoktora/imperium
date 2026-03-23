@@ -8,7 +8,17 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": ["moonpay", "crypto", "portfolio", "agent", "mcp", "openwalletstandard", "rebalance", "risk", "defi"],
+  "keywords": [
+    "moonpay",
+    "crypto",
+    "portfolio",
+    "agent",
+    "mcp",
+    "openwalletstandard",
+    "rebalance",
+    "risk",
+    "defi"
+  ],
   "author": "Jordi Alter <anjasroket@gmail.com>",
   "license": "MIT",
   "description": "Multi-Chain Financial Command Center - powered by MoonPay CLI + OpenWallet Standard",
@@ -21,7 +31,9 @@
     "@open-wallet-standard/core": "^0.3.9",
     "chalk": "^5.6.2",
     "cli-table3": "^0.6.5",
-    "commander": "^14.0.3"
+    "commander": "^14.0.3",
+    "dotenv": "^17.3.1",
+    "groq-sdk": "^1.1.1"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
