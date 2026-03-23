@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperium - Multi-Chain Financial Command Center</title>
+<style>
+  :root { --bg: #0a0a0f; --card: #12121a; --border: #1e1e2e; --text: #e0e0e8; --dim: #888; --accent: #6ee7b7; --red: #f87171; --yellow: #fbbf24; --blue: #60a5fa; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 2.5rem; color: var(--accent); margin-bottom: 0.5rem; }
+  h2 { font-size: 1.4rem; color: var(--accent); margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  h3 { font-size: 1.1rem; color: var(--blue); margin: 1.5rem 0 0.5rem; }
+  p { color: var(--dim); margin-bottom: 1rem; max-width: 700px; }
+  .subtitle { font-size: 1.1rem; color: var(--dim); margin-bottom: 2rem; }
+  .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+  .badge-green { background: #064e3b; color: var(--accent); }
+  .badge-blue { background: #1e3a5f; color: var(--blue); }
+  .badge-yellow { background: #451a03; color: var(--yellow); }
+  .terminal { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; margin: 1rem 0; overflow-x: auto; font-size: 0.85rem; line-height: 1.5; }
+  .terminal pre { color: var(--text); white-space: pre; }
+  .terminal .prompt { color: var(--accent); }
+  .terminal .cmd { color: #fff; }
+  .terminal .header { color: #6ee7b7; font-weight: bold; }
+  .terminal .safe { color: #6ee7b7; }
+  .terminal .warn { color: #fbbf24; }
+  .terminal .danger { color: #f87171; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+  .card h4 { color: var(--accent); margin-bottom: 0.5rem; font-size: 1rem; }
+  .card p { font-size: 0.9rem; color: var(--dim); margin: 0; }
+  .stat { font-size: 2rem; font-weight: bold; color: var(--accent); }
+  .stat-label { font-size: 0.8rem; color: var(--dim); }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+  th { text-align: left; padding: 0.5rem; color: var(--accent); border-bottom: 1px solid var(--border); }
+  td { padding: 0.5rem; border-bottom: 1px solid var(--border); color: var(--text); }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .hero { text-align: center; padding: 3rem 0; }
+  .cta { display: inline-block; padding: 0.75rem 2rem; background: var(--accent); color: #000; border-radius: 6px; font-weight: bold; font-size: 1rem; margin-top: 1rem; text-decoration: none; }
+  .cta:hover { opacity: 0.9; text-decoration: none; }
+  footer { text-align: center; padding: 2rem 0; color: var(--dim); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>IMPERIUM</h1>
+  <p class="subtitle" style="margin: 0 auto 1rem;">Multi-Chain Financial Command Center</p>
+  <p style="margin: 0 auto 1.5rem;">Monitor, protect, and rebalance your crypto portfolio across all chains. Powered by MoonPay CLI (MCP) + OpenWallet Standard.</p>
+  <div>
+    <span class="badge badge-green">13 MoonPay Tools</span>
+    <span class="badge badge-blue">Real MCP Protocol</span>
+    <span class="badge badge-green">7-Chain OWS Wallet</span>
+    <span class="badge badge-yellow">31 Tests Passing</span>
+  </div>
+  <br>
+  <a href="https://github.com/jordi-stack/imperium" class="cta">View on GitHub</a>
+</div>
+
+<h2>The Problem</h2>
+<p>Crypto portfolios are fragmented across multiple chains (Ethereum, Base, Polygon, Arbitrum) with no unified view. You can't see total allocation, can't detect rug pulls until it's too late, and rebalancing means hours of manual swaps and bridges across different UIs.</p>
+
+<h2>Key Stats</h2>
+<div class="grid">
+  <div class="card"><div class="stat">13</div><div class="stat-label">MoonPay CLI tools via real MCP protocol</div></div>
+  <div class="card"><div class="stat">7</div><div class="stat-label">Chains supported via OWS wallet (EVM, SOL, BTC, COSMOS, TRON, TON, FIL)</div></div>
+  <div class="card"><div class="stat">31</div><div class="stat-label">Tests passing (vitest)</div></div>
+  <div class="card"><div class="stat">4</div><div class="stat-label">Core modules (Portfolio, Risk, Rebalance, Discovery)</div></div>
+</div>
+
+<h2>Demo: Portfolio Overview</h2>
+<div class="terminal"><pre><span class="prompt">$</span> <span class="cmd">imperium portfolio</span>
+
+<span class="header">Portfolio</span>
++---------+---------+-----------+------------+
+| Token   | Chain   | Value     | Allocation |
++---------+---------+-----------+------------+
+| WETH    | base    | $2,560.91 | 31.3%      |
+| USDC    | base    | $1,850    | 22.6%      |
+| VVV     | base    | $2,497.65 | 30.5%      |
+| POL     | polygon | $1,280    | 15.6%      |
++---------+---------+-----------+------------+
+  Total: $8,188.56</pre></div>
+
+<h2>Demo: Risk Scanner</h2>
+<p>Scans all holdings for rug pull risk, holder concentration, and liquidity issues.</p>
+<div class="terminal"><pre><span class="prompt">$</span> <span class="cmd">imperium risk scan</span>
+
+<span class="header">Risk Scan</span>
++-------+---------+--------+----------------------------------------------+--------+
+| Token | Chain   | Risk   | Flags                                        | Action |
++-------+---------+--------+----------------------------------------------+--------+
+| WETH  | base    | <span class="safe">0/100</span>  | none                                         | <span class="safe">HOLD</span>   |
+| USDC  | base    | <span class="safe">0/100</span>  | none                                         | <span class="safe">HOLD</span>   |
+| VVV   | base    | <span class="warn">40/100</span> | moderately_concentrated, community_warnings  | <span class="warn">WATCH</span>  |
+| POL   | polygon | <span class="danger">75/100</span> | concentrated_holders, moderate_liquidity      | <span class="danger">SELL</span>   |
++-------+---------+--------+----------------------------------------------+--------+</pre></div>
+
+<h2>Demo: Smart Money Discovery</h2>
+<p>Find top-performing wallets on any chain. Real data from MoonPay CLI.</p>
+<div class="terminal"><pre><span class="prompt">$</span> <span class="cmd">imperium discover whales base</span>
+
+<span class="header">Smart Money - base</span>
++---------------+---------------+----------+-------+---------------------------------------+
+| Address       | PnL (30d)     | Win Rate | Swaps | Labels                                |
++---------------+---------------+----------+-------+---------------------------------------+
+| 0x9ec1...589a | <span class="safe">$2,545,824.96</span> | 48.6%    | 736   | smart trader tokens over two days old |
+| 0x4444...a148 | <span class="safe">$1,485,000.50</span> | 38.8%    | 454   | smart trader tokens over two days old |
+| 0x25dd...15d9 | <span class="safe">$1,426,434.92</span> | 41.3%    | 358   | smart trader tokens over two days old |
++---------------+---------------+----------+-------+---------------------------------------+</pre></div>
+
+<h2>Demo: Rebalance with Policy Gate</h2>
+<p>Set target allocation, preview actions, execute with spending policy enforcement.</p>
+<div class="terminal"><pre><span class="prompt">$</span> <span class="cmd">imperium rebalance target ETH:50 USDC:50</span>
+<span class="safe">Target allocation saved.</span>
+
+<span class="prompt">$</span> <span class="cmd">imperium rebalance preview</span>
+
+<span class="header">Rebalance Preview</span>
++-------+---------+--------+--------+
+| Token | Current | Target | Drift  |
++-------+---------+--------+--------+
+| ETH   | 31.3%   | 50.0%  | -18.7% |
+| USDC  | 22.6%   | 50.0%  | -27.4% |
+| VVV   | 30.5%   | 0.0%   | <span class="danger">+30.5%</span> |
+| POL   | 15.6%   | 0.0%   | <span class="danger">+15.6%</span> |
++-------+---------+--------+--------+
+
+<span class="header">Proposed Actions</span>
+  <span class="warn">SWAP</span>   $2,498 VVV -> USDC on base
+  <span class="safe">BRIDGE</span> $1,280 POL -> ETH polygon -> base</pre></div>
+
+<h2>Demo: Trending Tokens</h2>
+<div class="terminal"><pre><span class="prompt">$</span> <span class="cmd">imperium discover trending base</span>
+
+<span class="header">Trending - base</span>
++--------+-----------+------------+--------+-----------+
+| Token  | Price     | 24h Change | Volume | Liquidity |
++--------+-----------+------------+--------+-----------+
+| VVV    | $5.94     | -0.04%     | $2.7M  | $1.5M     |
+| THQ    | $0.027097 | +0.7%      | $0.9M  | $0.5M     |
+| ZORA   | $0.015748 | -4.6%      | $0.3M  | $0.1M     |
+| MORPHO | $1.67     | -4.6%      | $0.4M  | $0.7M     |
+| SYND   | $0.054970 | <span class="safe">+46.0%</span>     | $0.6M  | $0.1M     |
++--------+-----------+------------+--------+-----------+</pre></div>
+
+<h2>Architecture</h2>
+<div class="terminal"><pre>
+User (CLI)
+    |
+    v
+index.ts (command router)
+    |
+    +---> core/portfolio.ts ---+
+    +---> core/risk.ts --------+                    +---> MoonPay CLI (MCP)
+    +---> core/rebalance.ts ---+---> policy gate ---+
+    +---> core/discovery.ts ---+   (wallet/policy)  +---> OWS wallet (sign)
+</pre></div>
+
+<h2>MoonPay CLI Tools Used (13)</h2>
+<table>
+  <tr><th>#</th><th>Tool</th><th>Module</th><th>Purpose</th></tr>
+  <tr><td>1</td><td>token_balance_list</td><td>Portfolio</td><td>All holdings + USD value</td></tr>
+  <tr><td>2</td><td>token_retrieve</td><td>Portfolio</td><td>Detailed token market data</td></tr>
+  <tr><td>3</td><td>wallet_pnl_retrieve</td><td>Portfolio</td><td>Profit & loss summary</td></tr>
+  <tr><td>4</td><td>wallet_activity_list</td><td>Portfolio</td><td>Transaction history</td></tr>
+  <tr><td>5</td><td>buy</td><td>Portfolio</td><td>Fiat to crypto onramp</td></tr>
+  <tr><td>6</td><td>deposit_create</td><td>Portfolio</td><td>Multi-chain deposit link</td></tr>
+  <tr><td>7</td><td>token_check</td><td>Risk</td><td>Safety scan (rug pull, liquidity)</td></tr>
+  <tr><td>8</td><td>token_holder_list</td><td>Risk</td><td>Holder concentration analysis</td></tr>
+  <tr><td>9</td><td>token_swap</td><td>Rebalance</td><td>Swap tokens (same chain)</td></tr>
+  <tr><td>10</td><td>token_bridge</td><td>Rebalance</td><td>Bridge tokens (cross-chain)</td></tr>
+  <tr><td>11</td><td>token_trending_list</td><td>Discovery</td><td>Trending tokens per chain</td></tr>
+  <tr><td>12</td><td>wallet_discover</td><td>Discovery</td><td>Smart money wallets by PnL</td></tr>
+  <tr><td>13</td><td>token_search</td><td>Discovery</td><td>Search tokens by name/symbol</td></tr>
+</table>
+
+<h2>Tech Stack</h2>
+<div class="grid">
+  <div class="card"><h4>MCP Client</h4><p>@modelcontextprotocol/sdk (official SDK, not raw JSON-RPC)</p></div>
+  <div class="card"><h4>Wallet Layer</h4><p>@open-wallet-standard/core (real 7-chain HD wallet creation)</p></div>
+  <div class="card"><h4>Language</h4><p>TypeScript (strict mode)</p></div>
+  <div class="card"><h4>Testing</h4><p>Vitest - 31 tests across 7 files</p></div>
+  <div class="card"><h4>CLI</h4><p>Commander.js + chalk + cli-table3</p></div>
+  <div class="card"><h4>Execution</h4><p>MoonPay CLI v1.12.4 via MCP stdio transport</p></div>
+</div>
+
+<h2>Quick Start</h2>
+<div class="terminal"><pre><span class="prompt">$</span> <span class="cmd">git clone https://github.com/jordi-stack/imperium.git</span>
+<span class="prompt">$</span> <span class="cmd">cd imperium && npm install</span>
+
+<span class="dim"># Demo mode (no funds needed)</span>
+<span class="prompt">$</span> <span class="cmd">npx tsx src/index.ts --demo portfolio</span>
+<span class="prompt">$</span> <span class="cmd">npx tsx src/index.ts --demo risk scan</span>
+<span class="prompt">$</span> <span class="cmd">npx tsx src/index.ts --demo discover trending base</span>
+
+<span class="dim"># Real mode (requires moonpay login)</span>
+<span class="prompt">$</span> <span class="cmd">npm install -g @moonpay/cli</span>
+<span class="prompt">$</span> <span class="cmd">moonpay login --email you@example.com</span>
+<span class="prompt">$</span> <span class="cmd">npx tsx src/index.ts discover trending base</span></pre></div>
+
+<footer>
+  Imperium - Built for The Synthesis Hackathon<br>
+  MoonPay CLI Agents + OpenWallet Standard + Synthesis Open Track<br>
+  <a href="https://github.com/jordi-stack/imperium">GitHub</a>
+</footer>
+
+</div>
+</body>
+</html>
