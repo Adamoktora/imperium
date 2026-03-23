@@ -6,7 +6,10 @@ import { fileURLToPath } from "url";
 import type { McpClient } from "../types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const FIXTURES_DIR = join(__dirname, "fixtures");
+// In dev: src/mcp/fixtures, in built: dist/mcp/fixtures
+const FIXTURES_DIR = existsSync(join(__dirname, "fixtures"))
+  ? join(__dirname, "fixtures")
+  : join(__dirname, "mcp", "fixtures");
 
 function loadFixture(toolName: string): unknown {
   const path = join(FIXTURES_DIR, `${toolName}.json`);

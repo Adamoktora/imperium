@@ -2,18 +2,20 @@
   "name": "imperium",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
-  "bin": { "imperium": "./dist/index.js" },
   "scripts": {
     "dev": "tsx src/index.ts",
-    "build": "tsup src/index.ts --format esm --dts",
+    "build": "tsup",
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": ["moonpay", "crypto", "portfolio", "agent", "mcp"],
-  "author": "Imperium",
+  "keywords": ["moonpay", "crypto", "portfolio", "agent", "mcp", "openwalletstandard", "rebalance", "risk", "defi"],
+  "author": "Jordi Alter <anjasroket@gmail.com>",
   "license": "MIT",
-  "description": "Multi-Chain Financial Command Center  - powered by MoonPay CLI + OpenWallet Standard",
+  "description": "Multi-Chain Financial Command Center - powered by MoonPay CLI + OpenWallet Standard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jordi-stack/imperium"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@open-wallet-standard/core": "^0.3.9",

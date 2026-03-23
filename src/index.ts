@@ -333,5 +333,165 @@ policy.action(() => {
   display.showPolicy(config.policy);
 });
 
+// === INTERACTIVE REPL ===
+program
+  .command("interactive")
+  .alias("i")
+  .description("Interactive mode - type commands in a live shell")
+  .action(async () => {
+    const readline = await import("readline");
+    const isDemo = program.opts().demo;
+    const client = createMcpClient(isDemo);
+    await client.connect();
+
+    const portfolioService = new PortfolioService(client);
+    const riskService = new RiskService(client);
+    const discoveryService = new DiscoveryService(client);
+    const config = loadConfig();
+    const policyEngine = new PolicyEngine(config.policy);
+    const rebalanceService = new RebalanceService(client, policyEngine);
+
+    console.log("");
+    console.log(chalk.bold.cyan("  IMPERIUM v1.0 - Multi-Chain Financial Command Center"));
+    console.log(chalk.dim(`  Mode: ${isDemo ? "demo (fixture data)" : "live (MoonPay CLI)"}`));
+    console.log(chalk.dim("  Type 'help' for commands, 'quit' to exit\n"));
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      prompt: chalk.cyan("imperium> "),
+    });
+
+    const commands: Record<string, () => Promise<void>> = {
+      "help": async () => {
+        console.log(chalk.bold("\n  Available commands:\n"));
+        console.log("  portfolio          Show holdings & allocation");
+        console.log("  pnl                Profit & loss summary");
+        console.log("  activity           Recent transactions (Base)");
+        console.log("  risk               Scan all holdings for risks");
+        console.log("  trending           Trending tokens on Base");
+        console.log("  whales             Smart money wallets on Base");
+        console.log("  rebalance          Set target ETH:50 USDC:50 + preview");
+        console.log("  execute            Execute rebalance (policy-gated)");
+        console.log("  policy             Show spending policy");
+        console.log("  clear              Clear screen");
+        console.log("  quit               Exit\n");
+      },
+      "portfolio": async () => {
+        display.header("Portfolio");
+        const allocation = await portfolioService.getAllocation();
+        display.showAllocation(allocation);
+      },
+      "pnl": async () => {
+        display.header("Profit & Loss");
+        const pnl = await portfolioService.getPnL();
+        display.showPnL(pnl);
+      },
+      "activity": async () => {
+        display.header("Activity - base");
+        const activities = await portfolioService.getActivity("base");
+        display.showActivity(activities);
+      },
+      "risk": async () => {
+        display.header("Risk Scan");
+        const holdings = await portfolioService.getHoldings();
+        const reports = await riskService.scanPortfolio(holdings);
+        display.showRiskReports(reports);
+      },
+      "trending": async () => {
+        display.header("Trending - base");
+        const tokens = await discoveryService.getTrending("base");
+        display.showTrending(tokens);
+      },
+      "whales": async () => {
+        display.header("Smart Money - base");
+        const wallets = await discoveryService.getSmartMoney("base");
+        display.showSmartMoney(wallets);
+      },
+      "rebalance": async () => {
+        const targets = [{ token: "ETH", pct: 50 }, { token: "USDC", pct: 50 }];
+        const cfg = loadConfig();
+        cfg.targetAllocation = targets;
+        saveConfig(cfg);
+        display.header("Set Target Allocation");
+        console.log("  ETH: 50%");
+        console.log("  USDC: 50%");
+        display.success("Target set.");
+
+        display.header("Rebalance Preview");
+        const allocation = await portfolioService.getAllocation();
+        const drift = calculateDrift(allocation, targets);
+        display.showDrift(drift);
+        const actions = generateActions(drift, allocation);
+        console.log("");
+        display.header("Proposed Actions");
+        display.showActions(actions);
+      },
+      "execute": async () => {
+        const cfg = loadConfig();
+        if (!cfg.targetAllocation.length) {
+          display.error("Run 'rebalance' first to set a target.");
+          return;
+        }
+        display.header("Rebalance Execute");
+        const allocation = await portfolioService.getAllocation();
+        const actions = await rebalanceService.preview(allocation, cfg.targetAllocation);
+        if (actions.length === 0) {
+          display.success("Portfolio is balanced.");
+          return;
+        }
+        console.log(`  Executing ${actions.length} action(s)...`);
+        const results = await rebalanceService.execute(actions);
+        for (const r of results) {
+          if (r.success) {
+            display.success(`${r.action.from.token} -> ${r.action.to.token} | tx: ${r.txHash?.slice(0, 16)}...`);
+          } else {
+            display.error(`Failed: ${r.action.from.token} -> ${r.action.to.token} | ${r.error}`);
+          }
+        }
+      },
+      "policy": async () => {
+        display.header("Spending Policy");
+        const cfg = loadConfig();
+        display.showPolicy(cfg.policy);
+      },
+      "clear": async () => {
+        console.clear();
+      },
+    };
+
+    rl.prompt();
+
+    rl.on("line", async (line: string) => {
+      const cmd = line.trim().toLowerCase();
+      if (cmd === "quit" || cmd === "exit" || cmd === "q") {
+        console.log(chalk.dim("\n  Goodbye.\n"));
+        await client.disconnect();
+        rl.close();
+        process.exit(0);
+      }
+      const handler = commands[cmd];
+      if (handler) {
+        try {
+          await handler();
+        } catch (e: any) {
+          display.error(e.message);
+        }
+      } else if (cmd) {
+        console.log(chalk.dim(`  Unknown command: '${cmd}'. Type 'help' for available commands.`));
+      }
+      console.log("");
+      rl.prompt();
+    });
+
+    rl.on("close", async () => {
+      await client.disconnect();
+      process.exit(0);
+    });
+  });
+
+// Import chalk for interactive mode
+import chalk from "chalk";
+
 // Parse and run
 program.parse();
