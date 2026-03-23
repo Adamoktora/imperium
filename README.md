@@ -231,12 +231,12 @@ to reduce risk and increase stability.
 | Wallet | `@open-wallet-standard/core` |
 | CLI | `commander` + `chalk` + `cli-table3` |
 | Config | `dotenv` |
-| Testing | `vitest` (31 tests) |
+| Testing | `vitest` (40 tests) |
 
 ## Testing
 
 ```bash
-npm test          # Run all 31 tests
+npm test          # Run all 40 tests
 npm run test:watch
 ```
 
