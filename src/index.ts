@@ -10,6 +10,7 @@ import { PolicyEngine } from "./wallet/policy.js";
 import { loadConfig, saveConfig, getConfigPath, getDefaultPolicy } from "./utils/config.js";
 import { initWallet, isOWSAvailable, signPolicyAttestation } from "./wallet/ows.js";
 import { initGroq, isAIAvailable, analyzePortfolio, analyzeRisk, analyzeTrending, decideRebalance } from "./ai/advisor.js";
+import { initOnChainLogger, isOnChainAvailable, logDecision, getExplorerUrl } from "./chain/logger.js";
 import * as display from "./utils/display.js";
 import type { TargetAllocation } from "./types.js";
 
@@ -370,6 +371,16 @@ program
     const analysis = await analyzePortfolio(allocation, riskReports);
     console.log(chalk.white(analysis));
 
+    // Log on-chain
+    await initOnChainLogger();
+    if (isOnChainAvailable()) {
+      const summary = `ANALYZE: ${allocation.length} tokens, total $${allocation.reduce((s, a) => s + a.usdValue, 0).toFixed(0)}`;
+      const tx = await logDecision(summary);
+      if (tx) {
+        console.log(chalk.dim(`\n  On-chain: ${getExplorerUrl(tx)}`));
+      }
+    }
+
     await client.disconnect();
   });
 
@@ -422,6 +433,16 @@ program
     saveConfig(config);
     display.success("AI targets saved. Run 'imperium rebalance execute' to apply.");
 
+    // Log on-chain
+    await initOnChainLogger();
+    if (isOnChainAvailable()) {
+      const summary = `AI-REBALANCE: ${targets.map(t => `${t.token}:${t.pct.toFixed(0)}`).join(" ")}`;
+      const tx = await logDecision(summary);
+      if (tx) {
+        console.log(chalk.dim(`  On-chain: ${getExplorerUrl(tx)}`));
+      }
+    }
+
     await client.disconnect();
   });
 
@@ -439,9 +460,11 @@ program
     const portfolioService = new PortfolioService(client);
     const riskService = new RiskService(client);
 
+    await initOnChainLogger();
     display.header("Imperium Watch Mode");
     console.log(chalk.dim(`  Mode: ${isDemo ? "demo" : "live"}`));
     console.log(chalk.dim(`  AI: ${isAIAvailable() ? "enabled (Groq)" : "disabled (rule-based only)"}`));
+    console.log(chalk.dim(`  On-chain: ${isOnChainAvailable() ? "enabled (Base Sepolia)" : "disabled (no OWS wallet/funds)"}`));
     console.log(chalk.dim(`  Interval: ${opts.interval}s`));
     console.log(chalk.dim("  Press Ctrl+C to stop\n"));
 
@@ -488,6 +511,15 @@ program
           console.log(chalk.dim("\n  AI analyzing alerts..."));
           const analysis = await analyzePortfolio(allocation, reports);
           console.log(chalk.white(`\n${analysis}`));
+        }
+
+        // Log alerts on-chain
+        if (alerts > 0 && isOnChainAvailable()) {
+          const alertTokens = reports.filter(r => r.riskScore >= 40).map(r => `${r.token}:${r.riskScore}`).join(" ");
+          const tx = await logDecision(`WATCH-ALERT: cycle ${cycle} | ${alertTokens}`);
+          if (tx) {
+            console.log(chalk.dim(`  On-chain: ${getExplorerUrl(tx)}`));
+          }
         }
 
         if (alerts === 0) {
