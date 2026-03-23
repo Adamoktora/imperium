@@ -1,6 +1,44 @@
-[
-  { "token": "Ethereum", "symbol": "ETH", "chain": "base", "balance": "1.5", "usdValue": 4500, "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" },
-  { "token": "USD Coin", "symbol": "USDC", "chain": "base", "balance": "2000", "usdValue": 2000, "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" },
-  { "token": "Wrapped Bitcoin", "symbol": "WBTC", "chain": "ethereum", "balance": "0.05", "usdValue": 3500, "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599" },
-  { "token": "Matic", "symbol": "MATIC", "chain": "polygon", "balance": "5000", "usdValue": 2000, "address": "0x0000000000000000000000000000000000001010" }
-]
+{
+  "items": [
+    {
+      "token": "0x4200000000000000000000000000000000000006",
+      "name": "Wrapped ETH",
+      "symbol": "WETH",
+      "chain": "base",
+      "decimals": 18,
+      "balance": "1.245",
+      "usdValue": 2560.91,
+      "price": 2056.96
+    },
+    {
+      "token": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "chain": "base",
+      "decimals": 6,
+      "balance": "1850.00",
+      "usdValue": 1850.00,
+      "price": 1.0
+    },
+    {
+      "token": "0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf",
+      "name": "Venice Token",
+      "symbol": "VVV",
+      "chain": "base",
+      "decimals": 18,
+      "balance": "420.5",
+      "usdValue": 2497.65,
+      "price": 5.94
+    },
+    {
+      "token": "0x0000000000000000000000000000000000001010",
+      "name": "Polygon",
+      "symbol": "POL",
+      "chain": "polygon",
+      "decimals": 18,
+      "balance": "3200",
+      "usdValue": 1280.00,
+      "price": 0.40
+    }
+  ]
+}

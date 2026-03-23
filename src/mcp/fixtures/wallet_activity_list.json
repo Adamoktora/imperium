@@ -1,5 +1,32 @@
 [
-  { "type": "swap", "token": "ETH → USDC", "amount": "0.5 ETH", "chain": "base", "timestamp": "2026-03-22T10:30:00Z", "txHash": "0xabc123" },
-  { "type": "receive", "token": "ETH", "amount": "1.0 ETH", "chain": "base", "timestamp": "2026-03-21T15:00:00Z", "txHash": "0xdef456" },
-  { "type": "bridge", "token": "USDC", "amount": "500 USDC", "chain": "base", "timestamp": "2026-03-20T08:45:00Z", "txHash": "0xghi789" }
+  {
+    "type": "swap",
+    "description": "WETH → USDC",
+    "fromToken": "WETH",
+    "toToken": "USDC",
+    "fromAmount": "0.5",
+    "toAmount": "1028.48",
+    "chain": "base",
+    "timestamp": "2026-03-22T10:30:00Z",
+    "txHash": "0x8a3f2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a"
+  },
+  {
+    "type": "receive",
+    "description": "Received WETH",
+    "fromToken": "WETH",
+    "fromAmount": "1.0",
+    "chain": "base",
+    "timestamp": "2026-03-21T15:00:00Z",
+    "txHash": "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b"
+  },
+  {
+    "type": "bridge",
+    "description": "USDC Base → Polygon",
+    "fromToken": "USDC",
+    "fromAmount": "500",
+    "fromChain": "base",
+    "toChain": "polygon",
+    "timestamp": "2026-03-20T08:45:00Z",
+    "txHash": "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c"
+  }
 ]

@@ -1,7 +1,82 @@
 [
-  { "token": "Ethereum", "symbol": "ETH", "chain": "base", "price": 3000, "change24h": 2.5, "volume24h": 15000000000 },
-  { "token": "Aero", "symbol": "AERO", "chain": "base", "price": 1.85, "change24h": 12.3, "volume24h": 45000000 },
-  { "token": "Brett", "symbol": "BRETT", "chain": "base", "price": 0.042, "change24h": -5.2, "volume24h": 8500000 },
-  { "token": "Degen", "symbol": "DEGEN", "chain": "base", "price": 0.0085, "change24h": 28.7, "volume24h": 12000000 },
-  { "token": "Morpho", "symbol": "MORPHO", "chain": "base", "price": 2.15, "change24h": 4.1, "volume24h": 6200000 }
+  {
+    "address": "0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf",
+    "name": "Venice Token",
+    "symbol": "VVV",
+    "chain": "base",
+    "decimals": 18,
+    "marketData": {
+      "liquidity": 1534379,
+      "marketCap": 670232684,
+      "price": 5.93949345658,
+      "priceChangePercent": { "1h": -0.0069, "4h": 0.0023, "12h": 0.0227, "24h": -0.0004 },
+      "volume": { "1h": 68904, "4h": 420459, "12h": 1582410, "24h": 2726053 },
+      "trades": { "1h": 168, "4h": 750, "12h": 2381, "24h": 4513 },
+      "uniqueWallets": { "1h": 54, "4h": 211, "12h": 399, "24h": 519 }
+    }
+  },
+  {
+    "address": "0x0b2558bdbc7ffec0f327fb3579c23dabd1699706",
+    "name": "Theoriq Token",
+    "symbol": "THQ",
+    "chain": "base",
+    "decimals": 18,
+    "marketData": {
+      "liquidity": 451269,
+      "marketCap": 8798957,
+      "price": 0.0270968393377,
+      "priceChangePercent": { "1h": 0.0398, "4h": 0.0596, "12h": -0.0165, "24h": 0.0073 },
+      "volume": { "1h": 148325, "4h": 394868, "12h": 578153, "24h": 870109 },
+      "trades": { "1h": 3393, "4h": 9588, "12h": 12842, "24h": 17200 },
+      "uniqueWallets": { "1h": 224, "4h": 298, "12h": 337, "24h": 425 }
+    }
+  },
+  {
+    "address": "0x1111111111166b7fe7bd91427724b487980afc69",
+    "name": "Zora",
+    "symbol": "ZORA",
+    "chain": "base",
+    "decimals": 18,
+    "marketData": {
+      "liquidity": 94438,
+      "marketCap": 157475562,
+      "price": 0.0157475562419,
+      "priceChangePercent": { "1h": 0.0015, "4h": 0.0017, "12h": -0.0179, "24h": -0.0457 },
+      "volume": { "1h": 5916, "4h": 59435, "12h": 142372, "24h": 271523 },
+      "trades": { "1h": 188, "4h": 830, "12h": 3042, "24h": 6082 },
+      "uniqueWallets": { "1h": 67, "4h": 317, "12h": 758, "24h": 1202 }
+    }
+  },
+  {
+    "address": "0xbaa5cc21fd487b8fcc2f632f3f4e8d37262a0842",
+    "name": "Morpho Token",
+    "symbol": "MORPHO",
+    "chain": "base",
+    "decimals": 18,
+    "marketData": {
+      "liquidity": 718372,
+      "marketCap": 53621510,
+      "price": 1.66998078905,
+      "priceChangePercent": { "1h": -0.0016, "4h": -0.012, "12h": -0.0152, "24h": -0.0458 },
+      "volume": { "1h": 11230, "4h": 62733, "12h": 192978, "24h": 378697 },
+      "trades": { "1h": 69, "4h": 304, "12h": 676, "24h": 1430 },
+      "uniqueWallets": { "1h": 23, "4h": 90, "12h": 160, "24h": 250 }
+    }
+  },
+  {
+    "address": "0x11dc28d01984079b7efe7763b533e6ed9e3722b9",
+    "name": "Syndicate",
+    "symbol": "SYND",
+    "chain": "base",
+    "decimals": 18,
+    "marketData": {
+      "liquidity": 148691,
+      "marketCap": 2794150,
+      "price": 0.0549697218544,
+      "priceChangePercent": { "1h": 0.073, "4h": 0.1438, "12h": 0.4002, "24h": 0.4595 },
+      "volume": { "1h": 39670, "4h": 238656, "12h": 366475, "24h": 624389 },
+      "trades": { "1h": 243, "4h": 1328, "12h": 2409, "24h": 4185 },
+      "uniqueWallets": { "1h": 55, "4h": 170, "12h": 231, "24h": 338 }
+    }
+  }
 ]

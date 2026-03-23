@@ -27,7 +27,8 @@ export function showPnL(pnl: PnLSummary): void {
     const table = new Table({ head: ["Token", "PnL", "PnL %"].map((h) => chalk.bold(h)) });
     for (const p of pnl.positions) {
       const c = p.pnl >= 0 ? chalk.green : chalk.red;
-      table.push([p.token, c(`$${p.pnl.toLocaleString()}`), c(`${p.pnlPct.toFixed(1)}%`)]);
+      const pnlStr = p.pnl >= 0 ? `$${p.pnl.toLocaleString()}` : `-$${Math.abs(p.pnl).toLocaleString()}`;
+      table.push([p.token, c(pnlStr), c(`${p.pnlPct.toFixed(1)}%`)]);
     }
     console.log(table.toString());
   }
@@ -75,18 +76,36 @@ export function showActions(actions: RebalanceAction[]): void {
 }
 
 export function showTrending(tokens: TrendingToken[]): void {
-  const table = new Table({ head: ["Token", "Price", "24h Change", "Volume"].map((h) => chalk.bold(h)) });
+  const table = new Table({ head: ["Token", "Price", "24h Change", "Volume", "Liquidity"].map((h) => chalk.bold(h)) });
   for (const t of tokens) {
-    const c = t.change24h >= 0 ? chalk.green : chalk.red;
-    table.push([`${t.symbol}`, `$${t.price.toLocaleString()}`, c(`${t.change24h > 0 ? "+" : ""}${t.change24h.toFixed(1)}%`), `$${(t.volume24h / 1e6).toFixed(1)}M`]);
+    // MoonPay returns change as ratio (e.g. -0.045 = -4.5%), convert to percentage
+    const changePct = Math.abs(t.change24h) < 1 ? t.change24h * 100 : t.change24h;
+    const c = changePct >= 0 ? chalk.green : chalk.red;
+    const priceStr = t.price >= 1 ? `$${t.price.toFixed(2)}` : `$${t.price.toFixed(6)}`;
+    table.push([
+      `${t.symbol}`,
+      priceStr,
+      c(`${changePct > 0 ? "+" : ""}${changePct.toFixed(1)}%`),
+      `$${(t.volume24h / 1e6).toFixed(1)}M`,
+      `$${(t.liquidity / 1e6).toFixed(1)}M`,
+    ]);
   }
   console.log(table.toString());
 }
 
 export function showSmartMoney(wallets: SmartWallet[]): void {
-  const table = new Table({ head: ["Address", "PnL", "Win Rate"].map((h) => chalk.bold(h)) });
+  const table = new Table({ head: ["Address", "PnL (30d)", "Win Rate", "Swaps", "Labels"].map((h) => chalk.bold(h)) });
   for (const w of wallets) {
-    table.push([w.address, chalk.green(`$${w.pnl.toLocaleString()}`), `${w.winRate.toFixed(1)}%`]);
+    const pnlColor = w.pnl >= 0 ? chalk.green : chalk.red;
+    const addr = `${w.address.slice(0, 6)}...${w.address.slice(-4)}`;
+    const labels = w.labels?.length ? w.labels.map(l => l.replace(/_/g, " ").toLowerCase()).join(", ") : "-";
+    table.push([
+      addr,
+      pnlColor(`$${Number(w.pnl).toLocaleString()}`),
+      `${w.winRate.toFixed(1)}%`,
+      String(w.swaps || "-"),
+      labels,
+    ]);
   }
   console.log(table.toString());
 }

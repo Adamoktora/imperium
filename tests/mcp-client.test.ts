@@ -10,9 +10,11 @@ describe("MCP Client (demo mode)", () => {
   it("returns fixture data for token_balance_list", async () => {
     const client = createMcpClient(true);
     await client.connect();
-    const result = await client.callTool("token_balance_list", { chain: "base" });
+    const result = await client.callTool("token_balance_list", { chain: "base" }) as any;
     expect(result).toBeDefined();
-    expect(Array.isArray(result)).toBe(true);
+    // MoonPay returns { items: [...] }
+    expect(result.items).toBeDefined();
+    expect(Array.isArray(result.items)).toBe(true);
   });
 
   it("returns fixture data for token_check", async () => {

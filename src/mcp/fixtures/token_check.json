@@ -1,10 +1,17 @@
 {
-  "token": "Ethereum",
-  "symbol": "ETH",
-  "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-  "chain": "base",
-  "holderConcentration": 8,
-  "liquidityUsd": 50000000000,
-  "communityWarnings": false,
-  "warnings": []
+  "token": {
+    "address": "0x4200000000000000000000000000000000000006",
+    "name": "Wrapped ETH",
+    "symbol": "WETH",
+    "chain": "base"
+  },
+  "holderConcentration": {
+    "top10Percent": null
+  },
+  "liquidity": {
+    "total": 173499368.73,
+    "locked": 916143.47
+  },
+  "communityNotes": [],
+  "risks": []
 }

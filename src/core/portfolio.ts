@@ -6,8 +6,18 @@ export class PortfolioService {
   async getHoldings(chain?: string): Promise<TokenBalance[]> {
     const args: Record<string, unknown> = {};
     if (chain) args.chain = chain;
-    const result = await this.client.callTool("token_balance_list", args);
-    return result as TokenBalance[];
+    const result = await this.client.callTool("token_balance_list", args) as any;
+    // MoonPay returns { items: [...] } or array directly
+    const items = Array.isArray(result) ? result : (result?.items ?? []);
+    return items.map((item: any) => ({
+      token: item.token ?? item.address ?? "",
+      symbol: item.symbol ?? "",
+      chain: item.chain ?? chain ?? "base",
+      balance: String(item.balance ?? "0"),
+      usdValue: Number(item.usdValue ?? 0),
+      address: item.address ?? item.token,
+      name: item.name,
+    }));
   }
 
   async getAllocation(): Promise<Allocation[]> {
@@ -25,8 +35,18 @@ export class PortfolioService {
   }
 
   async getPnL(): Promise<PnLSummary> {
-    const result = await this.client.callTool("wallet_pnl_retrieve", {});
-    return result as PnLSummary;
+    const raw = await this.client.callTool("wallet_pnl_retrieve", {}) as any;
+    return {
+      totalValue: Number(raw.totalValueUsd ?? raw.totalValue ?? 0),
+      totalPnL: Number(raw.realizedProfitUsd ?? raw.totalPnL ?? 0),
+      pnlPct: Number(raw.realizedProfitPercentage ?? raw.pnlPct ?? 0),
+      positions: (raw.positions ?? []).map((p: any) => ({
+        token: p.token,
+        chain: p.chain,
+        pnl: Number(p.pnl),
+        pnlPct: Number(p.pnlPct),
+      })),
+    };
   }
 
   async getActivity(chain: string): Promise<Activity[]> {

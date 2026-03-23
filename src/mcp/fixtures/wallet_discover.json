@@ -1,6 +1,58 @@
-[
-  { "address": "0xSmartMoney1...abc", "chain": "base", "pnl": 520000, "winRate": 78.5 },
-  { "address": "0xSmartMoney2...def", "chain": "base", "pnl": 340000, "winRate": 72.1 },
-  { "address": "0xSmartMoney3...ghi", "chain": "base", "pnl": 280000, "winRate": 65.8 },
-  { "address": "0xSmartMoney4...jkl", "chain": "base", "pnl": 195000, "winRate": 69.3 }
-]
+{
+  "wallets": [
+    {
+      "address": "0x9ec1bff6ed7585aa85024fc02e73e93dfb4d589a",
+      "labels": ["SMART_TRADER_TOKENS_OVER_TWO_DAYS_OLD"],
+      "networkId": 8453,
+      "realizedProfitUsd1w": "2457080.98",
+      "realizedProfitUsd30d": "2545824.96",
+      "realizedProfitPercentage1w": 1604.43,
+      "realizedProfitPercentage30d": 166.50,
+      "winRate1w": 34.88,
+      "winRate30d": 48.60,
+      "swaps1w": 68,
+      "swaps30d": 736,
+      "volumeUsd1w": "2610224.52",
+      "volumeUsd30d": "4074869.54",
+      "uniqueTokens1w": 39,
+      "uniqueTokens30d": 269,
+      "scammerScore": 37
+    },
+    {
+      "address": "0x4444fcdd37be416c0477d7dd6f5b40d613b6a148",
+      "labels": ["SMART_TRADER_TOKENS_OVER_TWO_DAYS_OLD"],
+      "networkId": 8453,
+      "realizedProfitUsd1w": "1584015.21",
+      "realizedProfitUsd30d": "1485000.50",
+      "realizedProfitPercentage1w": 692.60,
+      "realizedProfitPercentage30d": 80.98,
+      "winRate1w": 27.54,
+      "winRate30d": 38.82,
+      "swaps1w": 109,
+      "swaps30d": 454,
+      "volumeUsd1w": "1812719.52",
+      "volumeUsd30d": "3318738.22",
+      "uniqueTokens1w": 58,
+      "uniqueTokens30d": 192,
+      "scammerScore": 44
+    },
+    {
+      "address": "0x25dd445e040bb99d2e350d903558ae0feea315d9",
+      "labels": ["SMART_TRADER_TOKENS_OVER_TWO_DAYS_OLD"],
+      "networkId": 8453,
+      "realizedProfitUsd1w": "1520486.23",
+      "realizedProfitUsd30d": "1426434.92",
+      "realizedProfitPercentage1w": 990.56,
+      "realizedProfitPercentage30d": 117.25,
+      "winRate1w": 32.26,
+      "winRate30d": 41.29,
+      "swaps1w": 105,
+      "swaps30d": 358,
+      "volumeUsd1w": "1673984.55",
+      "volumeUsd30d": "2642998.49",
+      "uniqueTokens1w": 56,
+      "uniqueTokens30d": 165,
+      "scammerScore": 41
+    }
+  ]
+}

@@ -20,7 +20,7 @@ export interface PnLSummary {
   totalValue: number;
   totalPnL: number;
   pnlPct: number;
-  positions: { token: string; pnl: number; pnlPct: number }[];
+  positions: { token: string; chain?: string; pnl: number; pnlPct: number }[];
 }
 
 export interface Activity {
@@ -103,19 +103,26 @@ export interface ImperiumConfig {
 
 // === Discovery ===
 export interface TrendingToken {
-  token: string;
+  address: string;
+  name: string;
   symbol: string;
   chain: string;
   price: number;
   change24h: number;
   volume24h: number;
+  liquidity: number;
+  marketCap: number;
 }
 
 export interface SmartWallet {
   address: string;
-  chain: string;
   pnl: number;
+  pnlPct: number;
   winRate: number;
+  swaps: number;
+  volume: string;
+  labels: string[];
+  scammerScore: number;
 }
 
 // === MCP ===

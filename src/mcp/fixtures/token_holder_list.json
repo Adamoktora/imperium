@@ -1,7 +1,40 @@
-[
-  { "address": "0xaaa111", "balance": "150000", "pct": 3.2, "pnl": 450000 },
-  { "address": "0xbbb222", "balance": "120000", "pct": 2.6, "pnl": 320000 },
-  { "address": "0xccc333", "balance": "95000", "pct": 2.0, "pnl": 180000 },
-  { "address": "0xddd444", "balance": "80000", "pct": 1.7, "pnl": 95000 },
-  { "address": "0xeee555", "balance": "60000", "pct": 1.3, "pnl": 72000 }
-]
+{
+  "holders": [
+    {
+      "address": "0x9ec1bff6ed7585aa85024fc02e73e93dfb4d589a",
+      "balance": "15420000",
+      "percentOfSupply": 2.3,
+      "realizedProfitUsd": "2545824.96",
+      "labels": ["SMART_TRADER_TOKENS_OVER_TWO_DAYS_OLD"]
+    },
+    {
+      "address": "0x4444fcdd37be416c0477d7dd6f5b40d613b6a148",
+      "balance": "12800000",
+      "percentOfSupply": 1.9,
+      "realizedProfitUsd": "1485000.50",
+      "labels": ["SMART_TRADER_TOKENS_OVER_TWO_DAYS_OLD"]
+    },
+    {
+      "address": "0x25dd445e040bb99d2e350d903558ae0feea315d9",
+      "balance": "9500000",
+      "percentOfSupply": 1.4,
+      "realizedProfitUsd": "1426434.92",
+      "labels": []
+    },
+    {
+      "address": "0xdeadbeef00000000000000000000000000000001",
+      "balance": "8200000",
+      "percentOfSupply": 1.2,
+      "realizedProfitUsd": "0",
+      "labels": []
+    },
+    {
+      "address": "0xdeadbeef00000000000000000000000000000002",
+      "balance": "6100000",
+      "percentOfSupply": 0.9,
+      "realizedProfitUsd": "-45000",
+      "labels": []
+    }
+  ],
+  "top10ConcentrationPercent": 11.7
+}

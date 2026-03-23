@@ -51,10 +51,14 @@ describe("Integration: Full Workflow", () => {
     const trending = await discovery.getTrending("base");
     expect(trending.length).toBeGreaterThan(0);
     expect(trending[0]).toHaveProperty("symbol");
+    expect(trending[0]).toHaveProperty("price");
+    expect(trending[0]).toHaveProperty("volume24h");
 
     const whales = await discovery.getSmartMoney("base");
     expect(whales.length).toBeGreaterThan(0);
     expect(whales[0]).toHaveProperty("pnl");
+    expect(whales[0]).toHaveProperty("winRate");
+    expect(whales[0]).toHaveProperty("address");
 
     await client.disconnect();
   });

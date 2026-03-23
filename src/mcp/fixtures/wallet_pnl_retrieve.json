@@ -1,10 +1,13 @@
 {
-  "totalValue": 10000,
-  "totalPnL": 1250,
-  "pnlPct": 14.3,
+  "address": "0x56471c1ECA6fC0D03Ce3c0D3b79d23DFAd1f9242",
+  "totalValueUsd": 8188.56,
+  "realizedProfitUsd": "1245.30",
+  "realizedProfitPercentage": 17.9,
+  "unrealizedProfitUsd": "320.50",
   "positions": [
-    { "token": "ETH", "pnl": 800, "pnlPct": 21.6 },
-    { "token": "USDC", "pnl": 0, "pnlPct": 0 },
-    { "token": "WBTC", "pnl": 450, "pnlPct": 14.8 }
+    { "token": "WETH", "chain": "base", "pnl": 680.20, "pnlPct": 21.6 },
+    { "token": "USDC", "chain": "base", "pnl": 0, "pnlPct": 0 },
+    { "token": "VVV", "chain": "base", "pnl": 565.10, "pnlPct": 29.3 },
+    { "token": "POL", "chain": "polygon", "pnl": -120.00, "pnlPct": -8.6 }
   ]
 }

@@ -6,9 +6,19 @@ import { PolicyEngine } from "../wallet/policy.js";
 
 const DRIFT_THRESHOLD = 3;
 
+/** Normalize token names for matching: WETH→ETH, wETH→ETH, etc. */
+function normalizeToken(name: string): string {
+  const upper = name.toUpperCase();
+  if (upper === "WETH" || upper === "WRAPPED ETH") return "ETH";
+  if (upper === "WBTC" || upper === "WRAPPED BTC") return "BTC";
+  if (upper === "WMATIC" || upper === "WRAPPED MATIC") return "MATIC";
+  return upper;
+}
+
 export function calculateDrift(current: Allocation[], targets: TargetAllocation[]): DriftReport[] {
   const drifts: DriftReport[] = targets.map((t) => {
-    const cur = current.find((c) => c.symbol === t.token || c.token === t.token);
+    const tNorm = normalizeToken(t.token);
+    const cur = current.find((c) => normalizeToken(c.symbol) === tNorm || normalizeToken(c.token) === tNorm);
     const currentPct = cur?.pct ?? 0;
     return {
       token: t.token,
@@ -21,7 +31,8 @@ export function calculateDrift(current: Allocation[], targets: TargetAllocation[
 
   // Tokens in portfolio but NOT in target → 100% overweight (should be sold)
   for (const cur of current) {
-    const inTarget = targets.find((t) => t.token === cur.symbol || t.token === cur.token);
+    const curNorm = normalizeToken(cur.symbol);
+    const inTarget = targets.find((t) => normalizeToken(t.token) === curNorm);
     if (!inTarget) {
       drifts.push({
         token: cur.symbol,

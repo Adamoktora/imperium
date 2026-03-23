@@ -1,4 +1,36 @@
-[
-  { "token": "Ethereum", "symbol": "ETH", "chain": "base", "price": 3000, "address": "0xeeee", "volume24h": 15000000000 },
-  { "token": "Ethereum Name Service", "symbol": "ENS", "chain": "ethereum", "price": 28.5, "address": "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72", "volume24h": 45000000 }
-]
+{
+  "items": [
+    {
+      "address": "0x4200000000000000000000000000000000000006",
+      "name": "Wrapped ETH",
+      "symbol": "WETH",
+      "chain": "base",
+      "decimals": 18,
+      "marketData": {
+        "liquidity": 29615940,
+        "marketCap": 529936407,
+        "price": 2056.96,
+        "priceChangePercent": { "1h": -0.0011, "4h": -0.002, "12h": -0.008, "24h": -0.0112 },
+        "volume": { "1h": 3908144, "4h": 20029161, "12h": 30012134, "24h": 61369684 },
+        "trades": { "1h": 258, "4h": 1048, "12h": 2296, "24h": 5106 },
+        "uniqueWallets": { "1h": 117, "4h": 354, "12h": 598, "24h": 1089 }
+      }
+    },
+    {
+      "address": "0xd4a0e0b9149bcee3c920d2e00b5de09138fd8bb7",
+      "name": "Aave Base WETH",
+      "symbol": "aBasWETH",
+      "chain": "base",
+      "decimals": 18,
+      "marketData": {
+        "liquidity": 550,
+        "marketCap": 239790715,
+        "price": 2033.48,
+        "priceChangePercent": { "1h": 0, "4h": 0, "12h": -0.055, "24h": -0.055 },
+        "volume": { "1h": 0, "4h": 0, "12h": 73, "24h": 73 },
+        "trades": { "1h": 0, "4h": 0, "12h": 1, "24h": 1 },
+        "uniqueWallets": { "1h": 0, "4h": 0, "12h": 1, "24h": 1 }
+      }
+    }
+  ]
+}

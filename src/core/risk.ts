@@ -47,16 +47,35 @@ export class RiskService {
   async checkToken(address: string, chain: string): Promise<RiskReport> {
     const result = (await this.client.callTool("token_check", { address, chain })) as any;
 
+    // Parse nested MoonPay format: holderConcentration.top10Percent, liquidity.total
+    const holderConc = typeof result.holderConcentration === "object"
+      ? (result.holderConcentration?.top10Percent ?? 0)
+      : (result.holderConcentration ?? 0);
+
+    const liquidityUsd = typeof result.liquidity === "object"
+      ? (result.liquidity?.total ?? 0)
+      : (result.liquidityUsd ?? result.liquidity ?? 0);
+
+    const hasWarnings = (result.communityNotes?.length > 0) ||
+      (result.risks?.length > 0) ||
+      (result.communityWarnings === true) ||
+      (result.warnings?.length > 0);
+
     const riskInput: RiskInput = {
-      holderConcentration: result.holderConcentration ?? result.top10HolderPct ?? 0,
-      liquidityUsd: result.liquidityUsd ?? result.liquidity ?? 0,
-      communityWarnings: result.communityWarnings ?? result.warnings?.length > 0 ?? false,
+      holderConcentration: Number(holderConc) || 0,
+      liquidityUsd: Number(liquidityUsd) || 0,
+      communityWarnings: hasWarnings,
     };
 
     const scored = calculateRiskScore(riskInput);
 
+    // Extract token name from nested or flat format
+    const tokenName = typeof result.token === "object"
+      ? (result.token.symbol ?? result.token.name ?? address)
+      : (result.token ?? result.symbol ?? address);
+
     return {
-      token: result.token ?? result.symbol ?? address,
+      token: tokenName,
       chain,
       address,
       ...scored,
