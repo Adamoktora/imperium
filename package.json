@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "imp": "tsx src/index.ts",
     "dev": "tsx src/index.ts",
     "build": "tsup",
     "test": "vitest run",
