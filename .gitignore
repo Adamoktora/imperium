@@ -1,7 +1,26 @@
+# Dependencies
 node_modules/
+
+# Build
 dist/
+
+# Config (local user data)
 .imperium/
+
+# Environment
 .env
+.env.*
+
+# Logs
 *.log
+
+# OS
 .DS_Store
-.claude
+Thumbs.db
+
+# Vercel
+.vercel/
+
+# IDE
+.vscode/
+.idea/
