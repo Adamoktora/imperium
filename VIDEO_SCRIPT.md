@@ -1,141 +1,156 @@
-# Imperium Demo Video Script (2 minutes)
+# Imperium Demo Video Script
 
-## Setup Before Recording
+## Setup Sebelum Record
 
 ```bash
 cd ~/hackathon/synthesis/imperium
-
-# Reset config agar clean
-rm -rf ~/.imperium
-
-# Pastikan .env ada GROQ_API_KEY
-cat .env
-
-# Clear terminal
-clear
+rm -rf ~/.imperium    # Reset config biar clean
+clear                 # Clear terminal
 ```
-
-## Recording Script
-
-### Scene 1: Intro (10 detik)
-
-Bicara atau text overlay:
-"Imperium - AI-powered financial agent. 13 MoonPay tools via real MCP. Let me show you."
-
-### Scene 2: Init OWS Wallet (10 detik)
-
-```bash
-./imp init
-```
-
-Output: 7-chain HD wallet (EVM, Solana, Bitcoin, Cosmos, Tron, TON, Filecoin)
-
-### Scene 3: Portfolio (10 detik)
-
-```bash
-./imp --demo portfolio
-```
-
-Output: 4 tokens across 2 chains, total $8,188
-
-### Scene 4: Risk Scan (10 detik)
-
-```bash
-./imp --demo risk scan
-```
-
-Output: WETH=HOLD, USDC=HOLD, VVV=WATCH (40/100), POL=SELL (75/100)
-
-### Scene 5: AI Analysis - THE STAR (20 detik)
-
-```bash
-./imp --demo analyze
-```
-
-Output: Real Groq Llama 3.3 70B response - portfolio health, top risk, recommended action
-
-Bicara: "Real AI analysis via Groq. Not hardcoded."
-
-### Scene 6: AI Rebalance (15 detik)
-
-```bash
-./imp --demo ai-rebalance
-```
-
-Output: AI decides WETH:50 USDC:40 VVV:10 POL:0 + swap/bridge actions
-
-### Scene 7: Real MoonPay Data (15 detik)
-
-```bash
-./imp discover trending base
-```
-
-Tanpa --demo! Live data dari MoonPay CLI via MCP.
-
-```bash
-./imp discover whales base
-```
-
-Real smart money wallets.
-
-### Scene 8: Watch Mode - Autonomous (20 detik)
-
-```bash
-./imp --demo watch --interval 30
-```
-
-Tunjukkan 1 cycle: detect -> AI analyze -> AI decide rebalance -> policy check -> dry-run execute -> on-chain log.
-
-Tekan Ctrl+C setelah 1 cycle selesai.
-
-### Scene 9: Close (10 detik)
-
-Bicara atau text:
-"Imperium. 13 MoonPay tools. Groq AI. OWS wallet. On-chain decisions. Built for The Synthesis."
-
-Tunjukkan: https://imperium-demo.vercel.app
 
 ---
 
-## Command Cheat Sheet (copy-paste)
+## SCENE 1: Intro (10 detik)
+
+**Command:** (tidak ada, tampilkan terminal kosong atau website)
+
+**Voice:**
+> "Imperium is an AI-powered financial agent that manages your crypto portfolio across multiple chains. It uses 13 MoonPay CLI tools via real MCP protocol, Groq AI for autonomous decisions, and OpenWallet Standard for secure wallet management. Let me show you how it works."
+
+---
+
+## SCENE 2: Init Wallet (10 detik)
+
+**Command:**
+```bash
+./imp init
+```
+
+**Voice:**
+> "First, we initialize the wallet. Imperium creates a real HD wallet via OpenWallet Standard, supporting 7 chains - Ethereum, Solana, Bitcoin, Cosmos, Tron, TON, and Filecoin. One wallet, all chains."
+
+---
+
+## SCENE 3: Portfolio (10 detik)
+
+**Command:**
+```bash
+./imp --demo portfolio
+```
+
+**Voice:**
+> "Here's our portfolio - four tokens across two chains. WETH and USDC on Base, VVV on Base, and POL on Polygon. Total value around eight thousand dollars. All data comes from MoonPay CLI via MCP."
+
+---
+
+## SCENE 4: Risk Scan (10 detik)
+
+**Command:**
+```bash
+./imp --demo risk scan
+```
+
+**Voice:**
+> "The risk scanner checks every token for rug pull signals, holder concentration, and liquidity issues. WETH and USDC are safe - score zero. VVV gets a 40 - watch it. But POL scores 75 out of 100 - concentrated holders, low liquidity. The agent says: sell."
+
+---
+
+## SCENE 5: AI Analysis - STAR MOMENT (20 detik)
+
+**Command:**
+```bash
+./imp --demo analyze
+```
+
+**Voice (saat "Gathering portfolio data..."):**
+> "Now the AI kicks in. This is real - Groq Llama 3.3, 70 billion parameters. Not hardcoded. The agent sends portfolio data and risk scores to the LLM..."
+
+**Voice (saat output muncul):**
+> "And it comes back with a full assessment. It identifies POL as the top concern, recommends selling it entirely, and suggests a new target allocation focused on stable assets. This is a real AI making real financial decisions."
+
+---
+
+## SCENE 6: AI Rebalance (15 detik)
+
+**Command:**
+```bash
+./imp --demo ai-rebalance
+```
+
+**Voice:**
+> "AI rebalance takes it further. The LLM decides the optimal allocation: 50% WETH, 40% USDC, 10% VVV, zero POL. It generates the exact swap and bridge actions needed - sell VVV on Base, bridge POL from Polygon to Base. Each action is checked against the spending policy before execution."
+
+---
+
+## SCENE 7: Live MoonPay Data (15 detik)
+
+**Command:**
+```bash
+./imp discover trending base
+```
+
+**Voice (saat trending output):**
+> "This is NOT demo mode. These are live trending tokens from MoonPay CLI via real MCP connection. Real prices, real volumes, real-time data."
+
+**Command:**
+```bash
+./imp discover whales base
+```
+
+**Voice:**
+> "Smart money discovery - real whale wallets on Base. Top wallet made 2.5 million dollars in profit last month with a 48% win rate. All from MoonPay."
+
+---
+
+## SCENE 8: Watch Mode - Autonomous Agent (20 detik)
+
+**Command:**
+```bash
+./imp --demo watch --interval 30
+```
+
+**Voice (saat header muncul):**
+> "Watch mode is the fully autonomous agent loop. AI is enabled, on-chain logging is enabled. It runs continuously."
+
+**Voice (saat cycle 1 berjalan):**
+> "Every cycle: scan portfolio, check risks, detect alerts. POL triggers a sell alert. The AI automatically analyzes the situation, decides a rebalance target, generates swap and bridge actions, checks each one against the spending policy, and logs the decision on-chain as immutable proof."
+
+**Voice (saat on-chain link muncul):**
+> "That transaction hash is real - verifiable on Base Sepolia Basescan right now."
+
+**(Ctrl+C untuk stop)**
+
+---
+
+## SCENE 9: Close (10 detik)
+
+**Voice:**
+> "Imperium. 13 MoonPay tools via real MCP. Groq AI for autonomous decisions. OpenWallet Standard for secure wallet management. On-chain decision logging on Base. 40 tests passing. Built for The Synthesis hackathon."
+
+**(Tampilkan website: https://imperium-demo.vercel.app)**
+
+---
+
+## Command Cheat Sheet (copy-paste cepat)
 
 ```bash
-# 1. Init
+clear
 ./imp init
-
-# 2. Portfolio
 ./imp --demo portfolio
-
-# 3. Risk
 ./imp --demo risk scan
-
-# 4. AI Analyze (REAL GROQ)
 ./imp --demo analyze
-
-# 5. AI Rebalance (REAL GROQ)
 ./imp --demo ai-rebalance
-
-# 6. Real MoonPay data (NO --demo)
 ./imp discover trending base
 ./imp discover whales base
-
-# 7. Watch mode (autonomous)
 ./imp --demo watch --interval 30
-# Wait for 1 cycle, then Ctrl+C
 ```
 
 ## Tips Recording
 
-- Gunakan terminal fullscreen (font besar)
-- Dark theme
-- Jangan terlalu cepat - beri waktu baca output
-- AI commands butuh 3-5 detik untuk response (Groq)
+- Terminal fullscreen, font besar (14-16pt)
+- Dark theme (terminal default)
+- Jangan buru-buru - beri 2-3 detik setiap output muncul
+- AI commands (analyze, ai-rebalance) butuh 3-5 detik response
 - Watch mode butuh 15-20 detik untuk 1 cycle penuh
-- Total: sekitar 2 menit
-
-## Tools Recording
-
-- Windows: OBS Studio, ShareX
-- Mac: QuickTime (Cmd+Shift+5)
-- Linux: OBS Studio, SimpleScreenRecorder
-- Online: Loom (free)
+- Total target: 2 menit
+- Tools: OBS Studio, Loom (free), atau QuickTime (Mac)
