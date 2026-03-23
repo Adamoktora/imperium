@@ -251,6 +251,31 @@ MOONPAY_WALLET=imperium  # MoonPay wallet name
 DEFAULT_CHAIN=base       # Default blockchain
 ```
 
+## On-Chain Decision Log (Base Sepolia)
+
+Every AI decision is hashed and committed on-chain as immutable proof of agent activity.
+
+**Contract:** [`0x98e0af1509c50a3b7fe34f3ea405fc182c512c78`](https://sepolia.basescan.org/address/0x98e0af1509c50a3b7fe34f3ea405fc182c512c78)
+
+```solidity
+contract ImperiumDecisionLog {
+    string public constant AGENT_NAME = "Imperium";
+    event Decision(address indexed agent, bytes32 indexed hash, string action, uint256 timestamp);
+    function log(bytes32 hash, string calldata action) external;
+}
+```
+
+| Decision | Action | TX |
+|----------|--------|----|
+| #1 | Agent deployed and initialized | [`0x4e1aec...`](https://sepolia.basescan.org/tx/0x4e1aec4afa1643e8a876b63b8376efdbc689846b37f0af13e4f9ef71d7567897) |
+| #2 | AI risk alert: POL 75/100, recommend SELL | [`0x2ea113...`](https://sepolia.basescan.org/tx/0x2ea113fc3a6d72112d7be2bdf004108881364762da7153971497249410cad3a9) |
+| #3 | AI rebalance: ETH:50 USDC:40 VVV:10 POL:0 | [`0x37dac4...`](https://sepolia.basescan.org/tx/0x37dac435cbcd995d180aae68f887320ef3d454f46bc36fe9d8bf5507fb9cd1f9) |
+
+Log more decisions:
+```bash
+npx tsx scripts/log-decision.ts "AI-ALERT: token risk changed"
+```
+
 ## Known Limitations
 
 1. **Demo mode uses fixture data** - Real mode requires MoonPay CLI login and funded wallet
@@ -264,6 +289,7 @@ DEFAULT_CHAIN=base       # Default blockchain
 
 - Track: MoonPay CLI Agents + OpenWallet Standard + Synthesis Open Track
 - Agent: Imperium (ERC-8004 on Base Mainnet)
+- On-chain: [DecisionLog on Base Sepolia](https://sepolia.basescan.org/address/0x98e0af1509c50a3b7fe34f3ea405fc182c512c78)
 - Builder: Jordi Alter + Claude Opus 4.6
 
 ## License
