@@ -14,28 +14,47 @@ export function isOWSAvailable(): boolean {
   return owsAvailable;
 }
 
-export async function initWallet(name: string): Promise<{ address: string }> {
+export async function initWallet(name: string): Promise<{ address: string; accounts: any[] }> {
   if (!owsAvailable) {
-    return { address: "0xDEMO_ADDRESS_OWS_UNAVAILABLE" };
+    return { address: "0xDEMO_ADDRESS_OWS_UNAVAILABLE", accounts: [] };
   }
   try {
+    // Check if wallet already exists
+    const existing = await owsModule.listWallets();
+    const found = existing?.find((w: any) => w.name === name);
+    if (found) {
+      const evmAccount = found.accounts?.find((a: any) => a.chainId?.startsWith("eip155")) || found.accounts?.[0];
+      return { address: evmAccount?.address || "0x0", accounts: found.accounts || [] };
+    }
+    // Create new wallet
     const wallet = await owsModule.createWallet(name);
     const accounts = wallet.accounts || [];
-    const evmAccount = accounts.find((a: any) => a.chains?.includes("eip155:1")) || accounts[0];
-    return { address: evmAccount?.address || "0x0" };
-  } catch {
-    return { address: "0xDEMO_ADDRESS_INIT_FAILED" };
+    const evmAccount = accounts.find((a: any) => a.chainId?.startsWith("eip155")) || accounts[0];
+    return { address: evmAccount?.address || "0x0", accounts };
+  } catch (e: any) {
+    return { address: `0xOWS_ERROR_${e.message?.slice(0, 20)}`, accounts: [] };
   }
 }
 
 export async function getWalletAddress(name: string): Promise<string> {
   if (!owsAvailable) return "0xDEMO_ADDRESS";
   try {
-    const wallet = await owsModule.getWallet(name);
-    const accounts = wallet?.accounts || [];
-    return accounts[0]?.address || "0x0";
+    const wallets = await owsModule.listWallets();
+    const wallet = wallets?.find((w: any) => w.name === name);
+    if (!wallet) return "0xWALLET_NOT_FOUND";
+    const evmAccount = wallet.accounts?.find((a: any) => a.chainId?.startsWith("eip155")) || wallet.accounts?.[0];
+    return evmAccount?.address || "0x0";
   } catch {
     return "0xDEMO_ADDRESS";
+  }
+}
+
+export async function listWallets(): Promise<any[]> {
+  if (!owsAvailable) return [];
+  try {
+    return await owsModule.listWallets() || [];
+  } catch {
+    return [];
   }
 }
 

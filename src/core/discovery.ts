@@ -4,7 +4,11 @@ export class DiscoveryService {
   constructor(private client: McpClient) {}
 
   async getTrending(chain: string): Promise<TrendingToken[]> {
-    const result = await this.client.callTool("token_trending_list", { chain }) as any;
+    const result = await this.client.callTool("token_trending_list", {
+      chain,
+      limit: 10,
+      page: 1,
+    }) as any;
     // MoonPay returns array or { items: [...] }
     const items = Array.isArray(result) ? result : (result?.items ?? []);
     return items.map((t: any) => ({
@@ -21,7 +25,11 @@ export class DiscoveryService {
   }
 
   async getSmartMoney(chain: string): Promise<SmartWallet[]> {
-    const result = await this.client.callTool("wallet_discover", { chain }) as any;
+    const result = await this.client.callTool("wallet_discover", {
+      chain,
+      ranking: "pnl",
+      limit: 5,
+    }) as any;
     // MoonPay returns { wallets: [...] } or array
     const wallets = Array.isArray(result) ? result : (result?.wallets ?? []);
     return wallets.map((w: any) => ({
@@ -36,8 +44,12 @@ export class DiscoveryService {
     }));
   }
 
-  async search(query: string): Promise<unknown[]> {
-    const result = await this.client.callTool("token_search", { query }) as any;
+  async search(query: string, chain: string = "base"): Promise<unknown[]> {
+    const result = await this.client.callTool("token_search", {
+      query,
+      chain,
+      limit: 5,
+    }) as any;
     const items = Array.isArray(result) ? result : (result?.items ?? []);
     return items;
   }

@@ -1,18 +1,22 @@
 import type { McpClient, TokenBalance, Allocation, PnLSummary, Activity } from "../types.js";
 
+const DEFAULT_WALLET = "imperium";
+const DEFAULT_CHAIN = "base";
+
 export class PortfolioService {
-  constructor(private client: McpClient) {}
+  constructor(private client: McpClient, private wallet: string = DEFAULT_WALLET) {}
 
   async getHoldings(chain?: string): Promise<TokenBalance[]> {
-    const args: Record<string, unknown> = {};
-    if (chain) args.chain = chain;
-    const result = await this.client.callTool("token_balance_list", args) as any;
+    const result = await this.client.callTool("token_balance_list", {
+      wallet: this.wallet,
+      chain: chain ?? DEFAULT_CHAIN,
+    }) as any;
     // MoonPay returns { items: [...] } or array directly
     const items = Array.isArray(result) ? result : (result?.items ?? []);
     return items.map((item: any) => ({
       token: item.token ?? item.address ?? "",
       symbol: item.symbol ?? "",
-      chain: item.chain ?? chain ?? "base",
+      chain: item.chain ?? chain ?? DEFAULT_CHAIN,
       balance: String(item.balance ?? "0"),
       usdValue: Number(item.usdValue ?? 0),
       address: item.address ?? item.token,
@@ -34,8 +38,11 @@ export class PortfolioService {
     }));
   }
 
-  async getPnL(): Promise<PnLSummary> {
-    const raw = await this.client.callTool("wallet_pnl_retrieve", {}) as any;
+  async getPnL(chain?: string): Promise<PnLSummary> {
+    const raw = await this.client.callTool("wallet_pnl_retrieve", {
+      wallet: this.wallet,
+      chain: chain ?? DEFAULT_CHAIN,
+    }) as any;
     return {
       totalValue: Number(raw.totalValueUsd ?? raw.totalValue ?? 0),
       totalPnL: Number(raw.realizedProfitUsd ?? raw.totalPnL ?? 0),
@@ -50,16 +57,32 @@ export class PortfolioService {
   }
 
   async getActivity(chain: string): Promise<Activity[]> {
-    const result = await this.client.callTool("wallet_activity_list", { chain });
-    return result as Activity[];
+    const result = await this.client.callTool("wallet_activity_list", {
+      wallet: this.wallet,
+      chain,
+      limit: 20,
+      cursor: null,
+    }) as any;
+    const items = Array.isArray(result) ? result : (result?.items ?? []);
+    return items as Activity[];
   }
 
-  async buyWithFiat(token: string, amount: string): Promise<{ checkoutUrl: string }> {
-    const result = await this.client.callTool("buy", { token, amount });
+  async buyWithFiat(token: string, amount: number): Promise<{ checkoutUrl: string }> {
+    const result = await this.client.callTool("buy", {
+      token,
+      amount,
+      wallet: this.wallet,
+      email: null,
+    });
     return result as { checkoutUrl: string };
   }
 
   async createDeposit(chain: string, token: string): Promise<unknown> {
-    return this.client.callTool("deposit_create", { chain, token });
+    return this.client.callTool("deposit_create", {
+      name: "imperium-deposit",
+      wallet: this.wallet,
+      chain,
+      token,
+    });
   }
 }

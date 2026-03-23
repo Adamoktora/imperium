@@ -45,7 +45,7 @@ export class RiskService {
   constructor(private client: McpClient) {}
 
   async checkToken(address: string, chain: string): Promise<RiskReport> {
-    const result = (await this.client.callTool("token_check", { address, chain })) as any;
+    const result = (await this.client.callTool("token_check", { token: address, chain })) as any;
 
     // Parse nested MoonPay format: holderConcentration.top10Percent, liquidity.total
     const holderConc = typeof result.holderConcentration === "object"
